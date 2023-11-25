@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import GetLogin from "../api/v1/GetLogin";
+import GetLogin from "api/v1/GetLogin";
 
 export default function Login() {
 	const [info, setInfo] = useState([]);
