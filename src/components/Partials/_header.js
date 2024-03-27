@@ -2,7 +2,7 @@ import React from 'react';
 import '../../output.css';
 import Button from './_arrow_button'
 
-const HomeHeader = () => {
+const Header = () => {
 	return (
 		<header className="relative z-50 w-full flex-none text-xl font-semibold leading-6 text-slate-900">
 			<nav className="mx-auto max-w-container px-4 sm:px-6 lg:px-8">
@@ -26,4 +26,4 @@ const HomeHeader = () => {
 	);
 };
 
-export default HomeHeader;
+export default Header;

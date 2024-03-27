@@ -3,7 +3,7 @@ const RequestToken = () => {
 	let params = {
 		response_type: 'code',
 		client_id: process.env.REACT_APP_GCP_CLIENT_ID,
-		redirect_uri: 'http://localhost:8000/user/create',
+		redirect_uri: 'http://localhost:3000/redirect',
 		approval_prompt: 'force',
 		scope: "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/calendar",
 		access_type: 'offline'
