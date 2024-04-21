@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Header from "@/app/components/layout/header";
 import Footer from "@/app/components/layout/footer";
-import { UserProvider } from "@/features/auth/components/UserContext";
+import { UserProvider } from "@/features/context/UserContext";
 
 export const metadata: Metadata = {
 	title: "minshif",

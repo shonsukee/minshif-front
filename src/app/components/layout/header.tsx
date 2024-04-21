@@ -3,7 +3,7 @@ import Button from '@/app/components/elements/_arrow_button'
 import Link from 'next/link';
 import Image from 'next/image';
 import '@/app/globals.css';
-import { UserContext } from '@/features/auth/components/UserContext';
+import { UserContext } from '@/features/context/UserContext';
 import { useContext } from 'react';
 import { UserContextType, User } from '@/features/auth/types/index';
 

@@ -1,0 +1,166 @@
+/**
+ * 全体
+ */
+ .calendar-root {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+}
+
+ .weekCalendarContainer {
+	width: 100%;
+	overflow-y: hidden;
+	min-width: 800px;
+	max-height: 1535px;
+}
+
+/**
+ * 縦軸：1週間の日付表示
+ */
+/** 日付要素 **/
+.weekContainer{
+	display: flex;
+	height: 84px;
+}
+
+.headline{
+	display: flex;
+	min-width: 150px;
+	font-size: 10px;
+	align-items: flex-end;
+}
+
+.date {
+	font-size: 26px;
+	font-weight: 400;
+	cursor: pointer;
+	outline: none;
+	color: rgb(60,64,67);
+	margin-right: auto;
+	margin-left: auto;
+}
+
+/** テーブル要素 **/
+.element-space {
+	width: 9px;
+	min-width: 9px;
+}
+
+.element-wrap {
+	display: flex;
+	position: relative;
+	gap: 10px;
+	grid-column: 1;
+	margin-top: 8px;
+}
+
+.element-column-line{
+	height: 20px;
+	border-left: rgb(218, 220, 224) 1px solid;
+	position: absolute;
+	bottom: 0;
+}
+
+.element {
+	width: 100%;
+	min-width: 40px;
+	display: grid;
+	justify-content: center;
+	align-items: center;
+}
+
+.element-scroll {
+	overflow: scroll;
+	visibility: hidden;
+	-webkit-box-flex: 0;
+	-webkit-flex: none;
+	flex: none;
+}
+
+
+/**
+ * 横軸：スタッフのシフト表示
+ */
+/**  **/
+.shiftContainer {
+	display: flex;
+	overflow-y: scroll;
+}
+
+.dateContainer {
+	width: 100%;
+	display: grid;
+}
+
+.calendarContainer {
+	width: 100%;
+	display: flex;
+	overflow-y: hidden;
+	max-height: 1535px;
+	justify-content: center;
+}
+
+.shiftList {
+	display: flex;
+	flex-direction: column;
+	padding: 0;
+	margin: 0;
+	width: 150px;
+	align-items: flex-start;
+}
+
+.shiftList > li {
+	min-height: 60px;
+	padding-top: 20px;
+}
+
+/** カレンダー要素 **/
+.calendarWrapper {
+	min-width: 100%;
+	display: flex;
+	position: relative;
+	top: 0;
+}
+
+.horizontalHeight {
+	height: 60px;
+}
+
+.horizontalHeight::after {
+	content: "";
+	border-bottom: 1px solid #e6e6e6;
+	position: absolute;
+	left: 0;
+	width: 100%;
+	margin-top: 1px;
+	z-index: 1;
+	pointer-events: none;
+}
+
+.eventContainer {
+	display: grid;
+	grid-template-columns: repeat(7, 1fr);
+	width: 100%;
+	border-top: 1px solid #e6e6e6;
+	border-bottom: 1px solid #e6e6e6;
+}
+
+.calendarColumn {
+	border-left: 1px solid #e6e6e6;
+	width: 100%;
+	overflow-y: hidden;
+	position: relative;
+}
+
+.empty {
+	height: 60px;
+	width: 100%;
+	display: block;
+}
+.empty:hover {
+	cursor: pointer;
+	background: rgba(0, 162, 106, 0.04);
+}

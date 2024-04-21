@@ -1,0 +1,98 @@
+/**
+ * Button
+ */
+/** 表示モード **/
+.viewModeBtn {
+	min-width: 88px;
+    max-height: 39px;
+	border-radius: 5px;
+	border: 1px solid #000;
+	width: fit-content;
+	font-size: 18px;
+	font-weight: 700;
+}
+
+.viewBtn {
+	border-right: 1px solid #000;
+	padding: 5px;
+}
+
+.viewBtn:last-child {
+	border-right: none;
+}
+
+.active {
+	background-color: #FF8A00;
+	color: #fff;
+}
+
+.active:first-child {
+	border-radius: 4px 0 0 4px;
+}
+
+.active:last-child {
+	border-radius: 0 4px 4px 0;
+}
+
+/** 日付調節 **/
+.dateAdjustBtn {
+	width: 39px;
+	height: 39px;
+	margin: 0 10px;
+	border: 1px solid #000;
+}
+
+/** シフト提出 **/
+.submitShift {
+	width: 200px;
+	height: 39px;
+	border: 1px solid #000;
+}
+
+/**
+ * カレンダー全体
+ */
+ .calendar-root {
+	padding-left: 50px;
+	padding-right: 50px;
+}
+
+/**
+ * サイドバー
+ */
+/** シフト提出 **/
+#overlay{
+	position:fixed;
+	top:0;
+	left:0;
+	width:100%;
+	height:100%;
+	background-color:rgba(0,0,0,0.5);
+	z-index: 2;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+#content {
+	width: 50%;
+	padding: 1em;
+	background-color: #fff;
+	min-width: 350px;
+	max-width: 600px;
+}
+
+.modalContent {
+	display: flex;
+	justify-content: center;
+	font-size: 18px;
+	font-weight: bold;
+}
+
+.modalTarget {
+	margin: 30px 0 0 30px;
+}
+
+.modalTarget:last-child {
+	margin-bottom: 30px;
+}

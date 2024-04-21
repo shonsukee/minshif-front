@@ -1,4 +1,3 @@
-"use client"
 import Image from 'next/image'
 import Button from '@/app/components/elements/_arrow_button'
 import '@/app/globals.css';
