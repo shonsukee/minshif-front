@@ -5,21 +5,27 @@ import SubmitButton from '@/features/store/components/SubmitButton'
 import Link from 'next/link'
 import CreateStore from '@/features/store/api/CreateStore'
 import { StoreCreateProps } from '@/features/store/types'
+import { useRouter } from 'next/navigation'
+import { useCookies } from 'react-cookie'
 
 export default function StoreCreate() {
 	const [storeName, setStoreName] = useState('');
+	const [cookies] = useCookies(['token']);
+	const router = useRouter();
 
 	const handleSubmit = async (e: any) => {
 		e.preventDefault();
-		const res: StoreCreateProps = await CreateStore({
+
+		const response: StoreCreateProps = await CreateStore({
 			storeName: storeName,
 			location: "日本",
+			token: cookies.token
 		});
-		console.log("resです",res);
-		if (res['response']) {
-			alert(res['response']);
+
+		if (response['response']) {
+			router.push('/home');
 		} else {
-			alert(res['error']);
+			alert(response['error']);
 		}
 	}
 
