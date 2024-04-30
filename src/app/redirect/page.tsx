@@ -46,8 +46,14 @@ export default function RedirectPage() {
 					removeCookie('user_id');
 					removeCookie('token');
 					router.push('/login');
+				} else if(response['is_new_user']) {
+					// 新規ユーザの場合は店舗作成画面へ遷移
+					setCookie('user_id', response['user_id']);
+					setCookie('token', response['token']);
+
+					router.push('/store/create');
 				} else {
-					// 認証情報をCookieに保存
+					// 既存ユーザの場合はホーム画面へ遷移
 					setCookie('user_id', response['user_id']);
 					setCookie('token', response['token']);
 
