@@ -1,4 +1,4 @@
-const LoginUser = async (code: string) => {
+const LoginUser = async (code: string, invitation_id: string | null) => {
 	let res;
 
 	await fetch(process.env.NEXT_PUBLIC_API_URL + '/user/create', {
@@ -8,6 +8,7 @@ const LoginUser = async (code: string) => {
 	  },
 	  body: JSON.stringify({
 		code: code,
+		invitation_id: invitation_id,
 	  }),
 	})
 	.then((response) => response.json())

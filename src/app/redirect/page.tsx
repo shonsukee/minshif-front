@@ -5,7 +5,6 @@ import { useCookies } from "react-cookie";
 import { useRouter } from "next/navigation";
 
 export default function RedirectPage() {
-	const [isAuth, setIsAuth] = useState(true);
 	const [cookies, setCookie, removeCookie] = useCookies(["user_id", "token"]);
 	const router = useRouter();
 
@@ -30,37 +29,34 @@ export default function RedirectPage() {
 				return;
 			}
 
-			if (isAuth) {
-				setIsAuth(false);
-
-				const code: string | null = extractCode();
-				if (!code) {
-					router.push('/login');
-					return;
-				}
-
-				// ユーザ・トークン情報を取得
-				const response: string[] | undefined = await LoginUser(code);
-
-				if (!response || response['error']) {
-					removeCookie('user_id');
-					removeCookie('token');
-					router.push('/login');
-				} else if(response['is_new_user']) {
-					// 新規ユーザの場合は店舗作成画面へ遷移
-					setCookie('user_id', response['user_id']);
-					setCookie('token', response['token']);
-
-					router.push('/store/create');
-				} else {
-					// 既存ユーザの場合はホーム画面へ遷移
-					setCookie('user_id', response['user_id']);
-					setCookie('token', response['token']);
-
-					router.push('/home');
-				}
-			} else {
+			const code: string | null = extractCode();
+			if (!code) {
 				router.push('/login');
+				return;
+			}
+
+			// 招待IDを取得
+			const invitation_id: string | null = sessionStorage.getItem('invitation_id');
+
+			// ユーザ・トークン情報を取得
+			const response: string[] | undefined = await LoginUser(code, invitation_id);
+
+			if (!response || response['error']) {
+				removeCookie('user_id');
+				removeCookie('token');
+				router.push('/login');
+			} else if(response['is_new_user']) {
+				// 新規ユーザの場合は店舗作成画面へ遷移
+				setCookie('user_id', response['user_id']);
+				setCookie('token', response['token']);
+
+				router.push('/store/create');
+			} else {
+				// 招待された新規ユーザ若しくは既存ユーザの場合はホーム画面へ遷移
+				setCookie('user_id', response['user_id']);
+				setCookie('token', response['token']);
+
+				router.push('/home');
 			}
 		})();
 	}, []);
