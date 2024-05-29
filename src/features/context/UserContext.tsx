@@ -18,9 +18,10 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 		}
 
 		(async () => {
-			const response = await FetchUserInfo() ?? null;
+			const token = cookies.token;
+			const response = await FetchUserInfo({token}) ?? null;
 
-			if (response === null || response['error']) {
+			if (response === null || response['error'] || response['user'] === null) {
 				setUser(null);
 			} else {
 				setUser({
