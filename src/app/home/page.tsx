@@ -1,5 +1,6 @@
 "use client"
 import React, { useState } from "react";
+import Link from "next/link";
 import { WeekAxisCalendar } from "@/features/home/calendar/components/weekAxis/WeekAxisCalendar";
 import { SubmitShiftModal } from "@/features/home/sidebar/components/SubmitShiftModal";
 import { ViewModeButton } from "@/features/home/calendar/components/ViewModeButton";
@@ -49,6 +50,7 @@ export default function Home() {
 			<div className="calendar-root">
 				<div className="flex">
 					<SubmitShiftModal />
+					<Link href="/shift/preferredShift">希望シフト提出</Link>
 					<ViewModeButton viewMode={viewMode} setViewMode={setViewMode} />
 					<button className="dateAdjustBtn" onClick={handleDecrement}> {"<"} </button>
 					<button className="dateAdjustBtn" onClick={handleIncrement}> {">"} </button>
