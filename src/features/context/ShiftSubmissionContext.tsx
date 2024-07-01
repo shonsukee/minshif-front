@@ -5,9 +5,11 @@ import FetchPreferredShiftPeriod from '../home/api/FetchPreferredShiftPeriod';
 
 interface ShiftSubmissionRequest {
 	id: number;
-	date: Date;
-	startTime: string;
-	endTime: string;
+	store_id: string;
+	start_date: Date;
+	end_date: Date;
+	deadline_date: Date;
+	deadline_time: string;
 	notes: string;
 }
 

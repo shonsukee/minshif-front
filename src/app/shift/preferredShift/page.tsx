@@ -1,23 +1,15 @@
 "use client"
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useContext } from "react";
 import { PreferredShiftForm } from "@/features/home/calendar/components/preferredShift/PreferredShiftForm";
 import { PreferredShiftCalendar } from "@/features/home/calendar/components/preferredShift/PreferredShiftCalendar";
 import { startOfDay } from "date-fns";
+import { ShiftSubmissionContext } from "@/features/context/ShiftSubmissionContext";
 
-interface ShiftSubmissionRequest {
-	date: Date;
-	startTime: string;
-	endTime: string;
-	notes: string;
-}
+export default function SubmitPreferredShift() {
+	const shiftSubmission = useContext(ShiftSubmissionContext);
 
-interface SubmitPreferredShiftProps {
-	shiftSubmissionRequest: ShiftSubmissionRequest[];
-}
-
-const SubmitPreferredShift: React.FC<SubmitPreferredShiftProps> = ({ shiftSubmissionRequest }) => {
-	const startDate = startOfDay(new Date("2024-07-01"));
-	const endDate = startOfDay(new Date("2024-07-30"));
+	const startDate = shiftSubmission && shiftSubmission.shiftSubmissionRequest.length > 0 ? startOfDay(new Date(shiftSubmission.shiftSubmissionRequest[0].start_date)) : startOfDay(new Date());
+	const endDate = shiftSubmission && shiftSubmission?.shiftSubmissionRequest.length > 0 ? startOfDay(new Date(shiftSubmission.shiftSubmissionRequest[0].end_date)) : startOfDay(new Date());
 	// 参照している日付
 	const [date, setDate] = useState(startDate);
 	const dateRef = useRef<Date>(startDate);
@@ -47,4 +39,3 @@ const SubmitPreferredShift: React.FC<SubmitPreferredShiftProps> = ({ shiftSubmis
 	);
 };
 
-export default SubmitPreferredShift;
