@@ -4,7 +4,18 @@ import { PreferredShiftForm } from "@/features/home/calendar/components/preferre
 import { PreferredShiftCalendar } from "@/features/home/calendar/components/preferredShift/PreferredShiftCalendar";
 import { startOfDay } from "date-fns";
 
-export default function SubmitPreferredShift() {
+interface ShiftSubmissionRequest {
+	date: Date;
+	startTime: string;
+	endTime: string;
+	notes: string;
+}
+
+interface SubmitPreferredShiftProps {
+	shiftSubmissionRequest: ShiftSubmissionRequest[];
+}
+
+const SubmitPreferredShift: React.FC<SubmitPreferredShiftProps> = ({ shiftSubmissionRequest }) => {
 	const startDate = startOfDay(new Date("2024-07-01"));
 	const endDate = startOfDay(new Date("2024-07-30"));
 	// 参照している日付
@@ -23,7 +34,7 @@ export default function SubmitPreferredShift() {
 				endDate={endDate}
 				shifts={shifts}
 				setDate={setDate}
-				/>
+			/>
 			<PreferredShiftForm
 				dateRef={dateRef}
 				endDate={endDate}
@@ -35,3 +46,5 @@ export default function SubmitPreferredShift() {
 		</div>
 	);
 };
+
+export default SubmitPreferredShift;

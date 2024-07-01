@@ -1,8 +1,9 @@
 "use client";
+import { ShiftSubmissionContext } from '@/features/context/ShiftSubmissionContext';
 import RegisterPreferredShifts from '@/features/home/api/RegisterPreferredShifts';
-import { add, addDays, format } from 'date-fns';
+import { addDays } from 'date-fns';
 import { useRouter } from 'next/navigation';
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useContext } from 'react';
 import { useCookies } from 'react-cookie';
 
 const JP_LOCALE = 9 * 3600000;
@@ -11,7 +12,6 @@ export const PreferredShiftForm = (
 {
 	dateRef,
 	endDate,
-	date,
 	shifts,
 	setDate,
 	setShifts
@@ -25,6 +25,7 @@ export const PreferredShiftForm = (
 }) => {
 	const [cookies] = useCookies(['token']);
 	const router = useRouter();
+	const shiftSubmission = useContext(ShiftSubmissionContext);
 
 	const shiftRef = useRef<Array<{ date: Date, startTime: string, endTime: string, notes: string }>>([]);
 
@@ -117,6 +118,7 @@ export const PreferredShiftForm = (
 			return;
 		}
 		const newShift = {
+			shift_submission_request_id: shiftSubmission?.shiftSubmissionRequest[0].id,
 			date:		new Date(dateRef.current.getTime() + JP_LOCALE),
 			startTime:	startTime,
 			endTime:	endTime,
