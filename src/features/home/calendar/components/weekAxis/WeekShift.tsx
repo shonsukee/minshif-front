@@ -1,16 +1,36 @@
 import { DAY_LIST } from "../constant/index";
-import { DayList, FactorList } from "../../types/index";
+import { DayList, StaffList } from "../../types/index";
+import { useEffect, useState } from "react";
+import FetchStaffList from "@/features/home/api/FetchStaffList";
+import { useToken } from "@/features/context/AuthContext";
 
-export const WeekShift = ({ dayList, factorList }: {dayList: DayList, factorList: FactorList }) => {
+export const WeekShift = ({ dayList }: { dayList: DayList }) => {
+	const [staffList, setStaffList] = useState<StaffList>([]);
+	const token = useToken();
+
+	useEffect(() => {
+		const fetchStaff = async () => {
+			if (token.token !== '') {
+				try {
+					const response = await FetchStaffList(token.token);
+					setStaffList(response);
+				} catch (error) {
+					console.error("Failed to fetch staff list", error);
+				}
+			}
+		};
+		fetchStaff();
+	}, [token]);
+
 	const EmptyCell = (date: { date: string }) => {
 		return (
 		<>
-			{factorList.map((factor) => {
+			{Object.entries(staffList).map(([key, staff]) => {
 				return (
 					<div
-						key={factor.name}
+						key={key}
 						onClick={() => {
-							console.log(date, `${factor.name}時`);
+							console.log(date, `${staff.user_name}時`);
 						}}
 						className="empty"
 					/>
@@ -58,13 +78,11 @@ export const WeekShift = ({ dayList, factorList }: {dayList: DayList, factorList
 			<div className="shiftContainer">
 				<div className="timeslotBox">
 					<ul className="shiftList">
-						{factorList.map((factor) => {
-							return (
-								<li key={factor.id} className="timeslotItem">
-									{factor.name}
-								</li>
-							);
-						})}
+					{Object.entries(staffList).map(([key, staff]) => (
+						<li key={key} className="timeslotItem">
+							{staff.user_name}
+						</li>
+					))}
 					</ul>
 				</div>
 				<div className="element-space"/>
@@ -72,8 +90,8 @@ export const WeekShift = ({ dayList, factorList }: {dayList: DayList, factorList
 				<div className="calendarContainer">
 					<div className="calendarWrapper">
 						<div>
-							{factorList.map((factor) => (
-								<div key={factor.id}>
+							{Object.entries(staffList).map(([key, staff]) => (
+								<div key={key}>
 									<div className="horizontalHeight" />
 								</div>
 							))}

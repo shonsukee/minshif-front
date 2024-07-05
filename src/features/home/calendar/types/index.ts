@@ -1,9 +1,10 @@
-export interface Factor {
+export interface Staff {
 	id: number;
-	name: string;
+	privilege: string;
+	user_name: string;
 };
 
-export type FactorList = Factor[];
+export type StaffList = Staff[];
 
 export interface Day {
 	day: number;

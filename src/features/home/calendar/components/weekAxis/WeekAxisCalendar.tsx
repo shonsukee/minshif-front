@@ -22,17 +22,9 @@ export const WeekAxisCalendar = ({ date, setDate }: WeekAxisCalendarProps) => {
 			return { day: day, date: dateFormat };
 		});
 
-	const factorList = [
-		{id: 1, name: "労働時間合計"},
-		{id: 2, name: "人件費"},
-		{id: 3, name: "Aさん"},
-		{id: 4, name: "Bさん"},
-		{id: 5, name: "管理者S"}
-	];
-
 	return (
 		<div role="grid" aria-readonly="true" className="weekCalendarContainer">
-			<WeekShift dayList={dayList} factorList={factorList} />
+			<WeekShift dayList={dayList} />
 		</div>
 	);
 }
