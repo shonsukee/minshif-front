@@ -1,14 +1,17 @@
 "use client"
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import Link from "next/link";
 import { WeekAxisCalendar } from "@/features/home/calendar/components/weekAxis/WeekAxisCalendar";
 import { SubmitShiftModal } from "@/features/home/sidebar/components/SubmitShiftModal";
 import { ViewModeButton } from "@/features/home/calendar/components/ViewModeButton";
 import { format, addWeeks, subWeeks, startOfWeek, endOfWeek } from "date-fns";
 import "@/features/home/Home.css";
+import { ShiftSubmissionContext } from "@/features/context/ShiftSubmissionContext";
 
 export default function Home() {
 	const [date, setDate] = useState(new Date());
 	const [viewMode, setViewMode] = useState('week');
+	const shiftSubmission = useContext(ShiftSubmissionContext);
 
 	const _start_date = format(startOfWeek(date), 'yyyy年MM月');
 	const _end_date = format(endOfWeek(date), 'yyyy年MM月');
@@ -42,13 +45,16 @@ export default function Home() {
 					<WeekAxisCalendar date={date} setDate={setDate} />
 				);
 		}
-	}
+	};
 
 	return (
 		<div>
 			<div className="calendar-root">
 				<div className="flex">
 					<SubmitShiftModal />
+					{shiftSubmission && shiftSubmission.shiftSubmissionRequest.length > 0 ? (
+						<Link href="/shift/preferredShift">希望シフト提出</Link>
+					) : ""}
 					<ViewModeButton viewMode={viewMode} setViewMode={setViewMode} />
 					<button className="dateAdjustBtn" onClick={handleDecrement}> {"<"} </button>
 					<button className="dateAdjustBtn" onClick={handleIncrement}> {">"} </button>
