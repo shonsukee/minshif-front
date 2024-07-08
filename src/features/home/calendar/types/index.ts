@@ -6,6 +6,18 @@ export interface Staff {
 
 export type StaffList = Staff[];
 
+export interface Shift {
+	id: number,
+	user_name: string,
+	date: string,
+	start_time: string,
+	end_time: string,
+	notes: string,
+	is_registered: boolean
+};
+
+export type ShiftList = Shift[][];
+
 export interface Day {
 	day: number;
 	date: string;
