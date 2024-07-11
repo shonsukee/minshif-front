@@ -1,5 +1,5 @@
 import { DAY_LIST } from "../constant/index";
-import { DayList, StaffList, ShiftList } from "../../types/index";
+import { DayList, Staff, StaffList, Shift, ShiftList } from "../../types/index";
 import { useEffect, useState } from "react";
 import FetchStaffList from "@/features/home/api/FetchStaffList";
 import FetchShiftList from "@/features/home/api/FetchShiftList";
@@ -44,56 +44,95 @@ export const WeekShift = ({ dayList }: { dayList: DayList }) => {
 	}, [token]);
 
 	/**
+	 * 時間の抽出
+	 * @param datetime: string
+	 * @returns string
+	 */
+	const extractTime = (datetime: string) => {
+		return datetime.split('T')[1].split(':').slice(0, 2).join(':');
+	};
+
+	/**
+	 * シフトが登録されているか
+	 * @param staffShiftList: Shift[]
+	 * @param date: string
+	 * @param staff: Staff
+	 * @returns number
+	 */
+	const findShifts = (staffShiftList: Shift[], date: string, staff: Staff) => {
+		if (!staffShiftList) return [];
+		return staffShiftList.filter((shift) => shift.date === date && shift.user_name === staff.user_name);
+	};
+
+	/**
+	 * 空のセル
+	 * @param staffIndex
+	 * @param date
+	 * @param staff
+	 * @returns jsx
+	 */
+	const EmptyCell = ({ shiftIndex, date, staff }: { shiftIndex: string, date: string, staff: Staff }) => {
+		return (
+			<div
+				key={shiftIndex}
+				onClick={() => {
+				console.log(date, `${staff.user_name}時`);
+				}}
+				className="cell"
+			/>
+		);
+	};
+
+	/**
 	 * シフトのセル
 	 * @param date
 	 * @returns jsx
 	 */
 	const Cell = ({ date }: { date: string }) => {
-		if (shiftList.length === 0) {
+		return (
+		<>
+			{staffList.map((staff, staffIndex) => {
+			const shifts = findShifts(shiftList[staffIndex], date, staff);
+			const registeredShift = shifts.find(shift => shift.is_registered);
+			const unregisteredShift = shifts.find(shift => !shift.is_registered);
+
 			return (
-				<>
-					{Object.entries(staffList).map(([key, staff]) => {
-						return (
-							<div
-								key={key}
-								onClick={() => {
-									console.log(date, `${staff.user_name}時`);
-								}}
-								className="empty"
-							/>
-						);
-					})}
-				</>
-				);
-		} else {
-			return (
-			<>
-				{/* スタッフ全員分のセルを作成 */}
-				{staffList.map((staff, staffIndex) => (
-					<div key={staffIndex}>
-						{/* シフトがある場合のみ開始と終了時間を表示 */}
-						{shiftList[staffIndex]?.map((shift, shiftIndex) => {
-							if (!shift || !staff) {
-								return null;
-							} else if (shift.date === date && shift.user_name === staff.user_name) {
-								return (
-									<div
-										key={shift.id}
-										onClick={() => {
-											console.log(date, `${shift.user_name}時`);
-										}}
-										className="shift"
-									>
-										{shift.start_time} : {shift.end_time}
-									</div>
-								);
-							}
-						})}
+				<div key={`staff-${staffIndex}`} className="staff">
+				{registeredShift ? (
+					<div
+						key={`registered-${staffIndex}-${registeredShift.id}`}
+						onClick={() => {
+							console.log(date, `${staff.user_name}時`);
+						}}
+						className="cell w-full"
+					>
+						<div className="bg-amber-500 rounded-lg px-2.5 flex items-center justify-center hover:shadow-md hover:bg-amber-600">
+							{extractTime(registeredShift.start_time)} ~ {extractTime(registeredShift.end_time)}
+						</div>
 					</div>
-				))}
-			</>
+				) : (
+					<EmptyCell shiftIndex={`empty-registered-${staffIndex}`} date={date} staff={staff} />
+				)}
+				{unregisteredShift ? (
+					<div
+						key={`unregistered-${staffIndex}-${unregisteredShift.id}`}
+						onClick={() => {
+							console.log(date, `${staff.user_name}時`);
+						}}
+						className="cell w-full"
+					>
+						<div className="bg-red-500 rounded-lg px-2.5 flex items-center justify-center hover:shadow-md hover:bg-red-600">
+							{extractTime(unregisteredShift.start_time)} ~ {extractTime(unregisteredShift.end_time)}
+						</div>
+					</div>
+				) : (
+					<EmptyCell shiftIndex={`empty-unregistered-${staffIndex}`} date={date} staff={staff} />
+				)}
+				</div>
 			);
-		}
+			})}
+		</>
+		);
 	};
 
 	return (
