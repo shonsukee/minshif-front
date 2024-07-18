@@ -1,17 +1,22 @@
 "use client"
 import React, { useState, useContext } from "react";
 import Link from "next/link";
+import RegisterDraftShiftsButton from "@/features/home/calendar/components/draftShift/RegisterDraftShiftsButton";
 import { WeekAxisCalendar } from "@/features/home/calendar/components/weekAxis/WeekAxisCalendar";
 import { SubmitShiftModal } from "@/features/home/sidebar/components/SubmitShiftModal";
 import { ViewModeButton } from "@/features/home/calendar/components/ViewModeButton";
 import { format, addWeeks, subWeeks, startOfWeek, endOfWeek } from "date-fns";
 import "@/features/home/Home.css";
 import { ShiftSubmissionContext } from "@/features/context/ShiftSubmissionContext";
+import { Shift } from "@/features/home/calendar/types";
 
 export default function Home() {
 	const [date, setDate] = useState(new Date());
 	const [viewMode, setViewMode] = useState('week');
 	const shiftSubmission = useContext(ShiftSubmissionContext);
+
+	// 登録予定シフト
+	const [draftShifts, setDraftShifts] = useState<Shift[]>([]);
 
 	const _start_date = format(startOfWeek(date), 'yyyy年MM月');
 	const _end_date = format(endOfWeek(date), 'yyyy年MM月');
@@ -33,7 +38,7 @@ export default function Home() {
 				);
 			case 'week':
 				return (
-					<WeekAxisCalendar date={date} setDate={setDate} />
+					<WeekAxisCalendar draftShifts={draftShifts} setDraftShifts={setDraftShifts} date={date} setDate={setDate} />
 				);
 			case 'day':
 				return (
@@ -42,7 +47,7 @@ export default function Home() {
 				);
 			default:
 				return (
-					<WeekAxisCalendar date={date} setDate={setDate} />
+					<WeekAxisCalendar draftShifts={draftShifts} setDraftShifts={setDraftShifts} date={date} setDate={setDate} />
 				);
 		}
 	};
@@ -63,6 +68,9 @@ export default function Home() {
 					</div>
 				</div>
 				{CalendarMode()}
+				{draftShifts.length > 0 && (
+					<RegisterDraftShiftsButton draftShifts={draftShifts} />
+				)}
 			</div>
 		</div>
 	);
