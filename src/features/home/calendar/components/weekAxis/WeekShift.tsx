@@ -1,18 +1,24 @@
 import { DAY_LIST } from "../constant/index";
-import { DayList, Staff, StaffList, Shift, ShiftList } from "../../types/index";
+import { DayList, Staff, StaffList, Shift, ShiftList, setDraftShifts } from "../../types/index";
 import { useEffect, useState } from "react";
 import FetchStaffList from "@/features/home/api/FetchStaffList";
 import FetchShiftList from "@/features/home/api/FetchShiftList";
 import { useToken } from "@/features/context/AuthContext";
+import DraftShiftModal from "../draftShift/DraftShiftModal";
 import { addDays } from "date-fns";
+import { format_time } from "@/features/util/datetime";
 
-export const WeekShift = ({ dayList }: { dayList: DayList }) => {
+export const WeekShift = ({ dayList, draftShifts, setDraftShifts }: { dayList: DayList, draftShifts: Shift[], setDraftShifts: setDraftShifts }) => {
 	const [staffList, setStaffList] = useState<StaffList>([]);
 	const [shiftList, setShiftList] = useState<ShiftList>([]);
+	const [isOpen, setIsOpen] = useState(false);
+	const [selectedStaff, setSelectedStaff] = useState<Staff | null>(null);
+	const [selectedDate, setSelectedDate] = useState<string>("");
+	const [selectedShift, setSelectedShift] = useState<Shift | null>(null);
 	const token = useToken();
 
 	/**
-	 * スタッフ・シフトリストの取得
+	 * スタッフリストの取得
 	 */
 	useEffect(() => {
 		const fetchStaff = async () => {
@@ -26,11 +32,18 @@ export const WeekShift = ({ dayList }: { dayList: DayList }) => {
 			}
 		};
 
+		fetchStaff();
+	}, [token]);
+
+	/**
+	 * シフトリストの取得
+	 */
+	useEffect(() => {
 		const fetchShift = async () => {
 			if (token.token !== '') {
 				try {
 					const start_date = addDays(new Date(dayList[0].date), -7).toString();
-					const end_date = addDays(new Date(dayList[0].date), 7).toString();
+					const end_date = addDays(new Date(dayList[6].date), 7).toString();
 					const response = await FetchShiftList(token.token, start_date, end_date);
 					setShiftList(response);
 				} catch (error) {
@@ -39,9 +52,8 @@ export const WeekShift = ({ dayList }: { dayList: DayList }) => {
 			}
 		};
 
-		fetchStaff();
 		fetchShift();
-	}, [token]);
+	}, [dayList, token]);
 
 	/**
 	 * 時間の抽出
@@ -71,12 +83,15 @@ export const WeekShift = ({ dayList }: { dayList: DayList }) => {
 	 * @param staff
 	 * @returns jsx
 	 */
-	const EmptyCell = ({ shiftIndex, date, staff }: { shiftIndex: string, date: string, staff: Staff }) => {
+	const EmptyCell = ({ shiftIndex, date, staff, unregisteredShift }: { shiftIndex: string, date: string, staff: Staff, unregisteredShift: Shift | null }) => {
 		return (
 			<div
 				key={shiftIndex}
 				onClick={() => {
-				console.log(date, `${staff.user_name}時`);
+					setIsOpen(true);
+					setSelectedStaff(staff);
+					setSelectedDate(date);
+					setSelectedShift(unregisteredShift);
 				}}
 				className="cell"
 			/>
@@ -90,48 +105,83 @@ export const WeekShift = ({ dayList }: { dayList: DayList }) => {
 	 */
 	const Cell = ({ date }: { date: string }) => {
 		return (
-		<>
-			{staffList.map((staff, staffIndex) => {
-			const shifts = findShifts(shiftList[staffIndex], date, staff);
-			const registeredShift = shifts.find(shift => shift.is_registered);
-			const unregisteredShift = shifts.find(shift => !shift.is_registered);
+			<>
+				{staffList.map((staff, staffIndex) => {
+					const shifts = findShifts(shiftList[staffIndex], date, staff);
+					const draftShift = draftShifts.find((draft) => draft.date === date && draft.user_name === staff.user_name);
+					const registeredShift = shifts.find(shift => shift.is_registered) ?? null;
+					const unregisteredShift = shifts.find(shift => !shift.is_registered) ?? null;
 
-			return (
-				<div key={`staff-${staffIndex}`} className="staff">
-				{registeredShift ? (
-					<div
-						key={`registered-${staffIndex}-${registeredShift.id}`}
-						onClick={() => {
-							console.log(date, `${staff.user_name}時`);
-						}}
-						className="cell w-full"
-					>
-						<div className="bg-amber-500 rounded-lg px-2.5 flex items-center justify-center hover:shadow-md hover:bg-amber-600">
-							{extractTime(registeredShift.start_time)} ~ {extractTime(registeredShift.end_time)}
+					return (
+						<div key={`staff-${staffIndex}`} className="staff">
+							{draftShift ? (
+								<div
+									key={`draft-${staffIndex}-${draftShift.id}`}
+									onClick={() => {
+										setIsOpen(true);
+										setSelectedStaff(staff);
+										setSelectedDate(date);
+										setSelectedShift(draftShift);
+									}}
+									className="cell w-full"
+								>
+									<div className="bg-lime-500 rounded-lg flex items-center justify-center hover:shadow-md hover:bg-lime-600">
+										{format_time(draftShift.start_time)} ~ {format_time(draftShift.end_time)}
+									</div>
+								</div>
+							) : (
+								registeredShift ? (
+									<div
+										key={`registered-${staffIndex}-${registeredShift.id}`}
+										onClick={() => {
+											setIsOpen(true);
+											setSelectedStaff(staff);
+											setSelectedDate(date);
+											setSelectedShift(registeredShift);
+										}}
+										className="cell w-full"
+									>
+										<div className="bg-amber-500 rounded-lg flex items-center justify-center hover:shadow-md hover:bg-amber-600">
+											{extractTime(registeredShift.start_time)} ~ {extractTime(registeredShift.end_time)}
+										</div>
+									</div>
+								) : (
+									<EmptyCell shiftIndex={`empty-registered-${staffIndex}`} date={date} staff={staff} unregisteredShift={unregisteredShift} />
+								)
+							)}
+							{unregisteredShift ? (
+								<div
+									key={`unregistered-${staffIndex}-${unregisteredShift.id}`}
+									onClick={() => {
+										setIsOpen(true);
+										setSelectedStaff(staff);
+										setSelectedDate(date);
+										setSelectedShift(unregisteredShift);
+									}}
+									className="cell w-full"
+								>
+									<div className="bg-red-500 rounded-lg flex items-center justify-center hover:shadow-md hover:bg-red-600">
+										{extractTime(unregisteredShift.start_time)} ~ {extractTime(unregisteredShift.end_time)}
+									</div>
+								</div>
+							) : (
+								<EmptyCell shiftIndex={`empty-registered-${staffIndex}`} date={date} staff={staff} unregisteredShift={null} />
+							)}
 						</div>
-					</div>
-				) : (
-					<EmptyCell shiftIndex={`empty-registered-${staffIndex}`} date={date} staff={staff} />
+					);
+				})}
+				{/* シフト登録モーダル */}
+				{selectedStaff && (
+					<DraftShiftModal
+						isOpen={isOpen}
+						date={selectedDate}
+						staff={selectedStaff}
+						shift={selectedShift}
+						setDraftShifts={setDraftShifts}
+						onClose={() => setIsOpen(false)}
+					/>
 				)}
-				{unregisteredShift ? (
-					<div
-						key={`unregistered-${staffIndex}-${unregisteredShift.id}`}
-						onClick={() => {
-							console.log(date, `${staff.user_name}時`);
-						}}
-						className="cell w-full"
-					>
-						<div className="bg-red-500 rounded-lg px-2.5 flex items-center justify-center hover:shadow-md hover:bg-red-600">
-							{extractTime(unregisteredShift.start_time)} ~ {extractTime(unregisteredShift.end_time)}
-						</div>
-					</div>
-				) : (
-					<EmptyCell shiftIndex={`empty-unregistered-${staffIndex}`} date={date} staff={staff} />
-				)}
-				</div>
-			);
-			})}
-		</>
+			</>
 		);
 	};
 

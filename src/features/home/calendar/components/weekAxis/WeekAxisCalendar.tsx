@@ -5,7 +5,7 @@ import { WeekShift } from "./WeekShift";
 import { WeekAxisCalendarProps } from "@/features/home/calendar/types";
 import "./WeekAxis.css";
 
-export const WeekAxisCalendar = ({ date, setDate }: WeekAxisCalendarProps) => {
+export const WeekAxisCalendar = ({ date, setDate, draftShifts, setDraftShifts }: WeekAxisCalendarProps) => {
 	const _day = getDay(date);
 	const _start_date = subDays(date, _day);
 
@@ -24,7 +24,7 @@ export const WeekAxisCalendar = ({ date, setDate }: WeekAxisCalendarProps) => {
 
 	return (
 		<div role="grid" aria-readonly="true" className="weekCalendarContainer">
-			<WeekShift dayList={dayList} />
+			<WeekShift dayList={dayList} draftShifts={draftShifts} setDraftShifts={setDraftShifts} />
 		</div>
 	);
 }
