@@ -32,20 +32,21 @@ export const DraftShiftModalContent = ({
 		const notes = notesRef.current ? notesRef.current.value : "";
 
 		if (!isStartTimeBeforeEndTime(start_time, end_time)) {
-			alert("開始時間が終了時間と同じか，終了時間よりも過去の時間を選択しています。");
+			alert("開始時間が終了時間と同じか，過去の時間を選択しています。");
 			return;
 		}
 
 		setDraftShifts((prev) => {
 			const newDraftShifts = prev.filter((draft) => new Date(draft.date).getTime() !== new Date(date).getTime());
 			newDraftShifts.push({
-				id: shift ? shift.id : -1,
+				id: shift ? shift.id : null,
 				user_name: staff.user_name,
 				date: date,
 				start_time: formatTimeToISO(start_time),
 				end_time: formatTimeToISO(end_time),
 				notes: notes,
-				is_registered: true
+				is_registered: true,
+				shift_submission_request_id: shift && shift != undefined ? shift.shift_submission_request_id : null
 			});
 			return newDraftShifts;
 		});

@@ -1,9 +1,13 @@
+import React, { useContext } from "react";
+import { TokenContext } from "@/features/context/AuthContext";
 import RegisterDraftShifts from "@/features/home/api/RegisterDraftShifts";
 import { Shift } from "../../types";
 
 const RegisterDraftShiftsButton = ({draftShifts}: {draftShifts: Shift[]}) => {
+	const token = useContext(TokenContext);
+
 	const handleRegisterDraftShifts = async () => {
-		const data = await RegisterDraftShifts(draftShifts);
+		const data = await RegisterDraftShifts(token, draftShifts);
 		if (data.error) {
 			alert(data.error);
 		} else {
