@@ -7,16 +7,23 @@ export type Staff = {
 export type StaffList = Staff[];
 
 export type Shift = {
-	id: number;
+	id: number | null;
 	user_name: string;
 	date: string;
 	start_time: string;
 	end_time: string;
 	notes: string;
 	is_registered: boolean;
+	shift_submission_request_id: number | null;
 };
 
 export type ShiftList = Shift[][];
+
+export type ShiftHistory = {
+	start_time: string;
+	end_time: string;
+	notes: string;
+};
 
 export type WeekAxisCalendarProps = {
 	date: Date;
@@ -25,15 +32,7 @@ export type WeekAxisCalendarProps = {
 	setDraftShifts: setDraftShifts;
 }
 
-export type setDraftShifts = React.Dispatch<React.SetStateAction<Array<{
-	id: number,
-	user_name: string,
-	date: string,
-	start_time: string,
-	end_time: string,
-	notes: string,
-	is_registered: boolean
-}>>>;
+export type setDraftShifts = React.Dispatch<React.SetStateAction<Array<Shift>>>;
 
 export type Day = {
 	day: number;
@@ -46,3 +45,7 @@ export type ViewModeButtonProps = {
 	viewMode: string;
 	setViewMode: React.Dispatch<React.SetStateAction<string>>;
 };
+
+export type Token = {
+	token: string;
+}

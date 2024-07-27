@@ -1,9 +1,4 @@
-interface Shift {
-	date: Date;
-	startTime: string;
-	endTime: string;
-	notes: string;
-}
+import { Shift } from '../calendar/types';
 
 const RegisterPreferredShifts = async ( preferredShifts: Shift[], token: string ) => {
 	try {
