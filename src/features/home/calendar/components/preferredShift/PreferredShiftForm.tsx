@@ -5,6 +5,9 @@ import { addDays } from 'date-fns';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState, useRef, useContext } from 'react';
 import { useCookies } from 'react-cookie';
+import { UserContext } from '@/features/context/UserContext';
+import { Shift, ShiftHistory } from '@/features/home/calendar/types';
+import { extractDate, extractYMD } from '@/features/util/datetime';
 
 const JP_LOCALE = 9 * 3600000;
 
@@ -19,15 +22,16 @@ export const PreferredShiftForm = (
 	dateRef: React.MutableRefObject<Date>,
 	endDate: Date,
 	date: Date,
-	shifts: Array<{ date: Date, startTime: string, endTime: string, notes: string }>,
+	shifts: Array<Shift>,
 	setDate: React.Dispatch<React.SetStateAction<Date>>,
-	setShifts: React.Dispatch<React.SetStateAction<Array<{ date: Date, startTime: string, endTime: string, notes: string }>>>
+	setShifts: React.Dispatch<React.SetStateAction<Array<Shift>>>
 }) => {
+	const user = useContext(UserContext);
 	const [cookies] = useCookies(['token']);
 	const router = useRouter();
 	const shiftSubmission = useContext(ShiftSubmissionContext);
 
-	const shiftRef = useRef<Array<{ date: Date, startTime: string, endTime: string, notes: string }>>([]);
+	const shiftRef = useRef<Array<Shift>>([]);
 
 	const [startTime, setStartTime] = useState("09:00");
 	const [endTime, setEndTime] = useState("18:00");
@@ -36,15 +40,15 @@ export const PreferredShiftForm = (
 	// 仮希望シフトの履歴を表示するJSX
 	const [calHistory, setCalHistory] = useState<JSX.Element[]>([]);
 	// シフト登録履歴
-	const [shiftHistory, setShiftHistory] = useState<Array<{ startTime: string, endTime: string, notes: string }>>([]);
+	const [shiftHistory, setShiftHistory] = useState<Array<ShiftHistory>>([]);
 
 	// 仮希望シフトの初期値設定
 	useEffect(() => {
-		const matchingShift = shifts.find(shift => shift.date.toDateString() === dateRef.current.toDateString());
+		const matchingShift = shifts.find(shift => extractYMD(shift.date) === extractYMD(dateRef.current.toString()));
 		if (matchingShift) {
-		  setStartTime(matchingShift.startTime);
-		  setEndTime(matchingShift.endTime);
-		  setNotes(matchingShift.notes);
+			setStartTime(matchingShift.start_time);
+			setEndTime(matchingShift.end_time);
+			setNotes(matchingShift.notes);
 		} else {
 			setStartTime('09:00');
 			setEndTime('18:00');
@@ -57,16 +61,16 @@ export const PreferredShiftForm = (
 		const updatedCalHistory: React.JSX.Element[] = shiftHistory.map((shift, index) => (
 			<button
 				key={index}
-				onClick={(e) => {registerFromHistory(e, shift.startTime, shift.endTime, shift.notes)}}
+				onClick={(e) => {registerFromHistory(e, shift.start_time, shift.end_time, shift.notes)}}
 				className="p-2 rounded-md w-full my-1 border-slate-300 border"
 			>
 				<div className="flex">
 					<div className="mr-1">
-						{shift.startTime}
+						{shift.start_time}
 					</div>
 					-
 					<div className="ml-1">
-						{shift.endTime}
+						{shift.end_time}
 					</div>
 					<div className="ml-2">
 						{shift.notes}
@@ -98,7 +102,7 @@ export const PreferredShiftForm = (
 
 	const handleClear = (e: React.FormEvent) => {
 		e.preventDefault();
-		shiftRef.current = shifts.filter(shift => shift.date.toDateString() !== dateRef.current.toDateString());
+		shiftRef.current = shifts.filter(shift => shift.date !== dateRef.current.toDateString());
 		setShifts(shiftRef.current);
 	}
 
@@ -117,23 +121,26 @@ export const PreferredShiftForm = (
 			console.log(error);
 			return;
 		}
-		const newShift = {
-			shift_submission_request_id: shiftSubmission?.shiftSubmissionRequest[0].id,
-			date:		new Date(dateRef.current.getTime() + JP_LOCALE),
-			startTime:	startTime,
-			endTime:	endTime,
-			notes:		notes
+		const newShift: Shift = {
+			id: null,
+			user_name:	user?.user?.name || "",
+			date:		new Date(dateRef.current.getTime() + JP_LOCALE).toDateString(),
+			start_time:	startTime,
+			end_time:	endTime,
+			notes:		notes,
+			is_registered: false,
+			shift_submission_request_id: shiftSubmission?.shiftSubmissionRequest[0].id || null
 		};
 
-		if (newShift.date.getDate() < endDate.getDate()) {
+		if (extractDate(newShift.date) < endDate.getDate()) {
 			dateRef.current = addDays(dateRef.current, 1);
 			setDate(dateRef.current);
 		}
 
 		// 仮希望シフトリストに登録済みなら更新
-		if (shifts.some(shift => shift.date.toString() === new Date(newShift.date.getTime()).toString())){
+		if (shifts.some(shift => extractYMD(shift.date) === extractYMD(newShift.date))) {
 			shifts.forEach((shift, index) => {
-				if (shift.date.toString() === new Date(newShift.date.getTime()).toString()) {
+				if (extractYMD(shift.date) === extractYMD(newShift.date)) {
 					shifts[index] = newShift;
 				}
 			});
@@ -142,13 +149,13 @@ export const PreferredShiftForm = (
 			setShifts(shiftRef.current);
 		}
 		setShiftHistory(prevHistory => {
-			const existingIndex = prevHistory.findIndex(history => history.startTime === startTime && history.endTime === endTime && history.notes === notes);
+			const existingIndex = prevHistory.findIndex(history => history.start_time === startTime && history.end_time === endTime && history.notes === notes);
 			if (existingIndex !== -1) {
 				const updatedHistory = [...prevHistory];
 				const [existingItem] = updatedHistory.splice(existingIndex, 1);
 				return [existingItem, ...updatedHistory];
 			} else {
-				return [{ startTime, endTime, notes }, ...prevHistory];
+				return [{ start_time: startTime, end_time: endTime, notes: notes }, ...prevHistory];
 			}
 		});
 	};

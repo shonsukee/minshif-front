@@ -1,10 +1,7 @@
 "use client"
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { useCookies } from 'react-cookie';
-
-interface Token {
-	token: string;
-}
+import { Token } from '@/features/home/calendar/types';
 
 export const TokenContext = createContext<Token | undefined>(undefined);
 

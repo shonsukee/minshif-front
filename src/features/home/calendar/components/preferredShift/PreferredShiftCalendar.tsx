@@ -1,8 +1,8 @@
 import React from 'react';
 import { DAY_LIST } from "@/features/home/calendar/components/constant/index";
 import { fetchSixWeekDay } from '../constant/fetchSixWeekDay';
-
-const JP_LOCALE = 9 * 3600000;
+import { Shift } from '../../types';
+import { extractYMD } from '@/features/util/datetime';
 
 // 標準時刻を取得
 const stripTime = (date: Date) => new Date(date.getFullYear(), date.getMonth(), date.getDate());
@@ -22,7 +22,7 @@ export const PreferredShiftCalendar = (
 	selectedDate: Date,
 	startDate: Date,
 	endDate: Date,
-	shifts: Array<{ date: Date, startTime: string, endTime: string, notes: string }>,
+	shifts: Array<Shift>,
 	setDate: React.Dispatch<React.SetStateAction<Date>>
 }) => {
 	const weeks = fetchSixWeekDay(stripTime(startDate));
@@ -53,6 +53,7 @@ export const PreferredShiftCalendar = (
 								className="text-2xl h-16 w-full flex items-center justify-center flex-auto"
 							>
 								<div className="w-10 h-10">
+									{/* カレンダーの日付表示 */}
 									{(startDate <= date && date <= endDate) ?
 										(
 											<button
@@ -72,10 +73,9 @@ export const PreferredShiftCalendar = (
 											</div>
 										)
 									}
+									{/* 予定がある場合，その日付に ● マークをつける */}
 									{shifts.map((shift, shiftIndex) => {
-										const shiftDate = new Date(shift.date.getTime() - JP_LOCALE);
-										const shiftDay = shiftDate.toString();
-										if (shiftDay === date.toString()) {
+										if (extractYMD(shift.date) === extractYMD(date.toString())) {
 											return (
 												<div key={`shift-${weekIndex}-${dateIndex}-${shiftIndex}`} className="w-full flex justify-center">
 													<div className="w-2 h-2 rounded-full bg-slate-300 mt-1" />
