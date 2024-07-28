@@ -3,6 +3,8 @@ import "./globals.css";
 import Header from "@/app/components/layout/header";
 import Footer from "@/app/components/layout/footer";
 import { UserProvider } from "@/features/context/UserContext";
+import { ShiftSubmissionProvider } from "@/features/context/ShiftSubmissionContext";
+import { TokenProvider } from "@/features/context/AuthContext";
 
 export const metadata: Metadata = {
 	title: "minshif",
@@ -17,11 +19,15 @@ export default function RootLayout({
 	return (
 		<html lang="ja">
 			<body className="h-90v">
-				<UserProvider>
-					<Header />
-						{children}
-					<Footer />
-				</UserProvider>
+				<TokenProvider>
+					<UserProvider>
+						<ShiftSubmissionProvider>
+							<Header />
+								{children}
+							<Footer />
+						</ShiftSubmissionProvider>
+					</UserProvider>
+				</TokenProvider>
 			</body>
 		</html>
 	);
