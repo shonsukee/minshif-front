@@ -41,3 +41,36 @@ export const isStartTimeBeforeEndTime = (startTime: string, endTime: string): bo
 	const endDate = new Date(`2000-01-01T${endTime}:00`);
 	return startDate.getTime() < endDate.getTime();
 };
+
+/**
+ * 日付のstring型から時間を抽出
+ * @param date - 日付のstring型
+ * @returns 時間のnumber型
+ */
+export const extractTime = (date: string): number => {
+	const date_Obj = new Date(date);
+	return date_Obj.getTime();
+}
+
+/**
+ * 日付のstring型から日付を抽出
+ * @param date - 日付のstring型
+ * @returns 日付のnumber型
+ */
+export const extractDate = (date: string): number => {
+	const date_Obj = new Date(date);
+	return date_Obj.getDate();
+}
+
+/**
+ * 日付のstring型から年月日を抽出
+ * @param date - 日付のstring型
+ * @returns 日付のnumber型
+ */
+export const extractYMD = (date: string): number => {
+	const date_Obj = new Date(date);
+	const year = date_Obj.getFullYear();
+	const month = ('0' + (date_Obj.getMonth() + 1)).slice(-2);
+	const day = ('0' + date_Obj.getDate()).slice(-2);
+	return parseInt(`${year}${month}${day}`, 10);
+}
