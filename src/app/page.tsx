@@ -1,9 +1,11 @@
 import Image from 'next/image'
 import Button from '@/app/components/elements/_arrow_button'
 import '@/app/globals.css';
+import { auth } from "@/auth"
 
+export default async function StaticPage() {
+	const session = await auth()
 
-export default function StaticPage() {
 	return (
 		<>
 			<div>
@@ -23,6 +25,11 @@ export default function StaticPage() {
 							sizes='(max-width: 768px) 100vw, 50vw'
 							fill
 						/>
+					</div>
+					<div className="flex flex-col col-span-12 mt-5 bg-gray-100 rounded-md">
+						<pre className="py-6 px-4 whitespace-pre-wrap break-all">
+							{JSON.stringify(session, null, 2)}
+						</pre>
 					</div>
 				</div>
 			</div>

@@ -1,15 +1,19 @@
-import Link from 'next/link';
-import '@/app/globals.css';
+import CustomLink from "@/features/auth-components/custom-link"
 
 export default function Footer() {
 	return (
-		<footer className="relative w-full flex-none text-xl font-semibold leading-6 mt-16 py-12 px-8">
-			<nav className="mx-auto max-w-container px-4 sm:px-6 lg:px-8">
-				<div className="absolute inset-x-0 top-0 h-px bg-slate-900/5"></div>
-				<div className="relative flex justify-center p-5 m-5">
-					<span className="text-slate-400 text-sm">© 2024 minshif</span>
-				</div>
-			</nav>
+		<footer className="flex flex-col gap-4 px-4 my-4 mx-0 w-full text-sm sm:flex-row sm:justify-between sm:items-center sm:px-6 sm:my-12 sm:mx-auto sm:max-w-3xl sm:h-5">
+			<div className="flex flex-col gap-4 sm:flex-row">
+				<CustomLink href="https://github.com/shonsukee/minshif-front">
+					Front source on GitHub
+				</CustomLink>
+				<CustomLink href="https://github.com/shonsukee/minshif-back">
+					Back source on GitHub
+				</CustomLink>
+			</div>
+			<div className="flex gap-2 justify-start items-center">
+				<span className="text-slate-400 text-sm">© 2024 minshif</span>
+			</div>
 		</footer>
-	);
+	)
 }
