@@ -20,7 +20,7 @@ export function MainNav() {
 	return (
 		<div className="flex gap-4 items-center">
 			<CustomLink href="/">
-				<Button variant="ghost" className="p-0">
+				<Button variant={"ghost"} className="p-0">
 					<Image
 						src="/logo.png"
 						alt="Home"
