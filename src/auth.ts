@@ -21,25 +21,41 @@ export const providerMap = providers.map((provider) => {
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
 	providers,
+	// カスタムページの設定
 	pages: {
 		signIn: "/signin",
+		signOut: "/",
 	},
 	basePath: "/api/auth",
 	callbacks: {
+		redirect: async ({ url, baseUrl }) => {
+			return url.startsWith(baseUrl) ? url : `${baseUrl}/redirect`;
+		},
 		authorized: async ({request, auth}) => {
 			try {
 				const { pathname } = request.nextUrl;
 				// Authentication required except for the root and sign-in pages.
-				if (pathname !== "/" && pathname !== "/api/auth/signin") return !!auth;
+				if (pathname !== "/" && pathname !== "/api/auth/signin" && pathname !== "/redirect") return !!auth;
 				return true;
 			} catch (e) {
 				console.log(e);
 			}
 		},
-		jwt: async ({ token, trigger, session }) => {
-			if (trigger === "update") token.name = session.user.name;
-			return token;
-		}
-	}
-})
+		jwt: async ({ token, user, account }) => {
+			if (user) {
+				token.user = user;
+			}
 
+			if (account) {
+				token.id = account.providerAccountsId;
+				token.accessToken = account.access_token;
+			}
+			return token
+		},
+		session: async ({ session, token }) => {
+			session.accessToken = token.accessToken as string;
+			session.user.id = token.sub as string;
+			return session
+		},
+	},
+})

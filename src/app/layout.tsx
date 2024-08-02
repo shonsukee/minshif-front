@@ -6,6 +6,7 @@ import Footer from "@/app/components/layout/footer";
 import { UserProvider } from "@/features/context/UserContext";
 import { ShiftSubmissionProvider } from "@/features/context/ShiftSubmissionContext";
 import { TokenProvider } from "@/features/context/AuthContext";
+import { SessionProvider } from "next-auth/react";
 
 export const metadata: Metadata = {
 	title: "minshif",
@@ -26,11 +27,13 @@ export default function RootLayout({
 					<TokenProvider>
 						<UserProvider>
 							<ShiftSubmissionProvider>
-								<Header />
-									<main className="flex-auto w-full max-w-7xl px-4 py-4 mx-auto sm:px-6 md:py-6">
-										{children}
-									</main>
-								<Footer />
+								<SessionProvider>
+									<Header />
+										<main className="flex-auto w-full max-w-7xl px-4 py-4 mx-auto sm:px-6 md:py-6">
+											{children}
+										</main>
+									<Footer />
+								</SessionProvider>
 							</ShiftSubmissionProvider>
 						</UserProvider>
 					</TokenProvider>
