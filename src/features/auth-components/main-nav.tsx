@@ -19,7 +19,7 @@ import { Button } from "./ui/button"
 export function MainNav() {
 	return (
 		<div className="flex gap-4 items-center">
-			<CustomLink href="/">
+			<CustomLink href="/home">
 				<Button variant={"ghost"} className="p-0">
 					<Image
 						src="/logo.png"

@@ -27,6 +27,16 @@ export default function SignInPage() {
 	const [providers, setProviders] = useState<Record<string, any> | null>(null);
 	const router = useRouter();
 
+	// 招待IDを保存
+	useEffect(() => {
+		const url: string = window.location.href;
+		const queryString: string = url.split("?")[1];
+		if (queryString) {
+			const params = new URLSearchParams(queryString);
+			sessionStorage.setItem('invitation_id', params.get("invitation_id") || '');
+		}
+	}, []);
+
 	useEffect(() => {
 		async function fetchProviders() {
 			const providers = await getProviders();
@@ -62,10 +72,11 @@ export default function SignInPage() {
 											onSubmit={async (e) => {
 												e.preventDefault();
 												try {
-													await signIn(provider.id);
-													router.push("/");
+													await signIn(provider.id, { callbackUrl: "/redirect" });
+													router.push("/redirect");
 												} catch (error) {
 													if (error instanceof AuthError) {
+														console.error(error);
 														return redirect(
 															`${process.env.SIGNIN_ERROR_URL}?error=${error.type}`
 														);
