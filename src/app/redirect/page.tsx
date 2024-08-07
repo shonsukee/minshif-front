@@ -11,7 +11,7 @@ const RedirectPage = () => {
 
 	useEffect(() => {
 		const sendSessionData = async () => {
-			if (session) {
+			if (session?.user) {
 				const response = await LoginUser(
 					session.accessToken || '',
 					invitation_id,
@@ -22,7 +22,7 @@ const RedirectPage = () => {
 						picture: session.user?.image as string,
 					}
 				);
-				console.log("response: ", response.message);
+
 				if (response.message === 'ログインに失敗しました') {
 					router.push("/");
 				}

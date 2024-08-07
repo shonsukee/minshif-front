@@ -3,28 +3,37 @@ import { DayList, Staff, StaffList, Shift, ShiftList, setDraftShifts } from "../
 import { useEffect, useState } from "react";
 import FetchStaffList from "@/features/home/api/FetchStaffList";
 import FetchShiftList from "@/features/home/api/FetchShiftList";
-import { useToken } from "@/features/context/AuthContext";
 import DraftShiftModal from "../draftShift/DraftShiftModal";
 import { addDays } from "date-fns";
 import { format_time } from "@/features/util/datetime";
+import { useSession } from "next-auth/react";
 
-export const WeekShift = ({ dayList, draftShifts, setDraftShifts }: { dayList: DayList, draftShifts: Shift[], setDraftShifts: setDraftShifts }) => {
+export const WeekShift = ({
+	dayList,
+	draftShifts,
+	setDraftShifts
+} : {
+	dayList: DayList,
+	draftShifts: Shift[],
+	setDraftShifts: setDraftShifts
+}) => {
+	// セッションを管理
+	const { data: session } = useSession();
 	const [staffList, setStaffList] = useState<StaffList>([]);
 	const [shiftList, setShiftList] = useState<ShiftList>([]);
 	const [isOpen, setIsOpen] = useState(false);
 	const [selectedStaff, setSelectedStaff] = useState<Staff | null>(null);
 	const [selectedDate, setSelectedDate] = useState<string>("");
 	const [selectedShift, setSelectedShift] = useState<Shift | null>(null);
-	const token = useToken();
 
 	/**
 	 * スタッフリストの取得
 	 */
 	useEffect(() => {
 		const fetchStaff = async () => {
-			if (token.token !== '') {
+			if (session) {
 				try {
-					const response = await FetchStaffList(token.token);
+					const response = await FetchStaffList(session.user?.email as string);
 					setStaffList(response);
 				} catch (error) {
 					console.error("Failed to fetch staff list", error);
@@ -33,18 +42,18 @@ export const WeekShift = ({ dayList, draftShifts, setDraftShifts }: { dayList: D
 		};
 
 		fetchStaff();
-	}, [token]);
+	}, [session]);
 
 	/**
 	 * シフトリストの取得
 	 */
 	useEffect(() => {
 		const fetchShift = async () => {
-			if (token.token !== '') {
+			if (session) {
 				try {
-					const start_date = addDays(new Date(dayList[0].date), -7).toString();
-					const end_date = addDays(new Date(dayList[6].date), 7).toString();
-					const response = await FetchShiftList(token.token, start_date, end_date);
+					const start_date = addDays(new Date(dayList[0].date), -7).toISOString();
+					const end_date = addDays(new Date(dayList[6].date), 7).toISOString();
+					const response = await FetchShiftList(session?.user?.email || '', start_date, end_date);
 					setShiftList(response);
 				} catch (error) {
 					console.error("Failed to fetch shift list", error);
@@ -53,7 +62,7 @@ export const WeekShift = ({ dayList, draftShifts, setDraftShifts }: { dayList: D
 		};
 
 		fetchShift();
-	}, [dayList, token]);
+	}, [dayList, session]);
 
 	/**
 	 * 時間の抽出
