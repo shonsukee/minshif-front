@@ -1,25 +1,24 @@
 "use client"
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import FetchUserInfo from '@/features/auth/api/FetchUserInfo';
-import { useCookies } from 'react-cookie';
 import { User, UserContextType } from '@/features/auth/types/index';
+import { useSession } from 'next-auth/react';
 
 export const UserContext = createContext<UserContextType | null>(null);
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
 	const [user, setUser] = useState<User | null>(null);
-	const [cookies] = useCookies(['user_id', 'token']);
+	const { data: session } = useSession();
 
 	// ログイン状態のユーザ情報を取得
 	useEffect(() => {
-		if (!cookies.user_id || !cookies.token) {
+		if (!session?.user || !session?.user.email) {
 			setUser(null);
 			return;
 		}
 
-		(async () => {
-			const token = cookies.token;
-			const response = await FetchUserInfo({token}) ?? null;
+		const fetchUserInfo = async (email: string) => {
+			const response = await FetchUserInfo(email) ?? null;
 
 			if (response === null || response['error'] || response['user'] === null) {
 				setUser(null);
@@ -31,8 +30,10 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 					picture: response['user']['picture'],
 				});
 			}
-		})();
-	}, [cookies.user_id, cookies.token]);
+		};
+
+		fetchUserInfo(session.user.email);
+	}, [session]);
 
 	return (
 		<UserContext.Provider value={{user}}>

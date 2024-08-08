@@ -24,19 +24,19 @@ export default function RootLayout({
 		<html lang="ja">
 			<body className={inter.className}>
 				<div className="flex flex-col justify-between w-full h-full min-h-screen">
-					<TokenProvider>
-						<UserProvider>
-							<ShiftSubmissionProvider>
-								<SessionProvider>
+					<SessionProvider>
+						<TokenProvider>
+							<UserProvider>
+								<ShiftSubmissionProvider>
 									<Header />
 										<main className="flex-auto w-full max-w-7xl px-4 py-4 mx-auto sm:px-6 md:py-6">
 											{children}
 										</main>
 									<Footer />
-								</SessionProvider>
-							</ShiftSubmissionProvider>
-						</UserProvider>
-					</TokenProvider>
+								</ShiftSubmissionProvider>
+							</UserProvider>
+						</TokenProvider>
+					</SessionProvider>
 				</div>
 			</body>
 		</html>
