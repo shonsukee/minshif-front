@@ -6,11 +6,11 @@ import Link from 'next/link'
 import CreateStore from '@/features/store/api/CreateStore'
 import { StoreCreateProps } from '@/features/store/types'
 import { useRouter } from 'next/navigation'
-import { useCookies } from 'react-cookie'
+import { useSession } from 'next-auth/react'
 
 export default function StoreCreate() {
+	const { data: session } = useSession();
 	const [storeName, setStoreName] = useState('');
-	const [cookies] = useCookies(['token']);
 	const router = useRouter();
 
 	const handleSubmit = async (e: any) => {
@@ -19,7 +19,7 @@ export default function StoreCreate() {
 		const response: StoreCreateProps = await CreateStore({
 			storeName: storeName,
 			location: "日本",
-			token: cookies.token
+			email: session?.user?.email as string,
 		});
 
 		if (response['response']) {
