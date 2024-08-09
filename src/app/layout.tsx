@@ -23,17 +23,17 @@ export default function RootLayout({
 		<html lang="ja">
 			<body className={inter.className}>
 				<div className="flex flex-col justify-between w-full h-full min-h-screen">
-					<SessionProvider>
-						<UserProvider>
-							<ShiftSubmissionProvider>
-								<Header />
+					<Header />
+						<SessionProvider>
+							<UserProvider>
+								<ShiftSubmissionProvider>
 									<main className="flex-auto w-full max-w-7xl px-4 py-4 mx-auto sm:px-6 md:py-6">
 										{children}
 									</main>
-								<Footer />
-							</ShiftSubmissionProvider>
-						</UserProvider>
-					</SessionProvider>
+								</ShiftSubmissionProvider>
+							</UserProvider>
+						</SessionProvider>
+					<Footer />
 				</div>
 			</body>
 		</html>
