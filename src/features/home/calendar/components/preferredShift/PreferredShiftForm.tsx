@@ -4,7 +4,6 @@ import RegisterPreferredShifts from '@/features/home/api/RegisterPreferredShifts
 import { addDays } from 'date-fns';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState, useRef, useContext } from 'react';
-import { useCookies } from 'react-cookie';
 import { UserContext } from '@/features/context/UserContext';
 import { Shift, ShiftHistory } from '@/features/home/calendar/types';
 import { extractDate, extractYMD } from '@/features/util/datetime';
@@ -27,7 +26,6 @@ export const PreferredShiftForm = (
 	setShifts: React.Dispatch<React.SetStateAction<Array<Shift>>>
 }) => {
 	const user = useContext(UserContext);
-	const [cookies] = useCookies(['token']);
 	const router = useRouter();
 	const shiftSubmission = useContext(ShiftSubmissionContext);
 
@@ -123,7 +121,7 @@ export const PreferredShiftForm = (
 		}
 		const newShift: Shift = {
 			id: null,
-			user_name:	user?.user?.name || "",
+			email:		user?.user?.email || "",
 			date:		new Date(dateRef.current.getTime() + JP_LOCALE).toDateString(),
 			start_time:	startTime,
 			end_time:	endTime,
@@ -163,9 +161,8 @@ export const PreferredShiftForm = (
 	// 希望シフトを提出
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
-		const token = cookies.token;
 
-		const response = await RegisterPreferredShifts(shifts, token);
+		const response = await RegisterPreferredShifts(shifts, user?.user?.email);
 		if (response.status === 200) {
 			router.push('/home');
 			return;

@@ -1,14 +1,14 @@
 import { Shift } from '../calendar/types';
 
-const RegisterPreferredShifts = async ( preferredShifts: Shift[], token: string ) => {
+const RegisterPreferredShifts = async ( preferredShifts: Shift[], email: string | undefined ) => {
 	try {
 		const response = await fetch(process.env.NEXT_PUBLIC_API_URL + '/shift/preferred_shifts', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
-				'Authorization': 'Bearer ' + token
 			},
 			body: JSON.stringify({
+				email: email,
 				preferredShifts: preferredShifts
 			}),
 		});
