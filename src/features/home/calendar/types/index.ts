@@ -47,7 +47,3 @@ export type ViewModeButtonProps = {
 	viewMode: string;
 	setViewMode: React.Dispatch<React.SetStateAction<string>>;
 };
-
-export type Token = {
-	token: string;
-}
