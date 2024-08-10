@@ -82,7 +82,7 @@ export const WeekShift = ({
 	 */
 	const findShifts = (staffShiftList: Shift[], date: string, staff: Staff) => {
 		if (!staffShiftList) return [];
-		return staffShiftList.filter((shift) => shift.date === date && shift.user_name === staff.user_name);
+		return staffShiftList.filter((shift) => shift.date === date && shift.email === staff.email);
 	};
 
 	/**
@@ -117,7 +117,7 @@ export const WeekShift = ({
 			<>
 				{staffList.map((staff, staffIndex) => {
 					const shifts = findShifts(shiftList[staffIndex], date, staff);
-					const draftShift = draftShifts.find((draft) => draft.date === date && draft.user_name === staff.user_name);
+					const draftShift = draftShifts.find((draft) => draft.date === date && draft.email === staff.email);
 					const registeredShift = shifts.find(shift => shift.is_registered) ?? null;
 					const unregisteredShift = shifts.find(shift => !shift.is_registered) ?? null;
 
@@ -233,7 +233,8 @@ export const WeekShift = ({
 				<div className="timeslotBox">
 					<ul className="shiftList">
 					{Object.entries(staffList).map(([key, staff]) => (
-						<li key={key} className="timeslotItem">
+						<li key={key} className="timeslotItem flex justify-center items-center ">
+							<img src={staff.picture} alt={`staff-${key}`} className="w-10 h-10 mr-3 rounded-lg" />
 							{staff.user_name}
 						</li>
 					))}

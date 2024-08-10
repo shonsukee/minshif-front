@@ -5,7 +5,6 @@ import Header from "@/app/components/layout/header";
 import Footer from "@/app/components/layout/footer";
 import { UserProvider } from "@/features/context/UserContext";
 import { ShiftSubmissionProvider } from "@/features/context/ShiftSubmissionContext";
-import { TokenProvider } from "@/features/context/AuthContext";
 import { SessionProvider } from "next-auth/react";
 
 export const metadata: Metadata = {
@@ -24,19 +23,17 @@ export default function RootLayout({
 		<html lang="ja">
 			<body className={inter.className}>
 				<div className="flex flex-col justify-between w-full h-full min-h-screen">
-					<TokenProvider>
-						<UserProvider>
-							<ShiftSubmissionProvider>
-								<SessionProvider>
-									<Header />
-										<main className="flex-auto w-full max-w-7xl px-4 py-4 mx-auto sm:px-6 md:py-6">
-											{children}
-										</main>
-									<Footer />
-								</SessionProvider>
-							</ShiftSubmissionProvider>
-						</UserProvider>
-					</TokenProvider>
+					<Header />
+						<SessionProvider>
+							<UserProvider>
+								<ShiftSubmissionProvider>
+									<main className="flex-auto w-full max-w-7xl px-4 py-4 mx-auto sm:px-6 md:py-6">
+										{children}
+									</main>
+								</ShiftSubmissionProvider>
+							</UserProvider>
+						</SessionProvider>
+					<Footer />
 				</div>
 			</body>
 		</html>

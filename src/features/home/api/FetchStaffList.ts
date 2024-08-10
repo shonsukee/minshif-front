@@ -1,4 +1,7 @@
-const FetchStaffList = async ( email: string ): Promise<{id: number, privilege: string, user_name: string}[]> => {
+import { StaffList } from "@/features/home/calendar/types";
+
+
+const FetchStaffList = async ( email: string ): Promise<StaffList> => {
 	try{
 		const response = await fetch(process.env.NEXT_PUBLIC_API_URL + `/store/staff_list?email=${email}`, {
 			method: 'GET',
