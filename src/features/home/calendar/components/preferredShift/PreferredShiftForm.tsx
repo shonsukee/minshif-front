@@ -4,7 +4,6 @@ import RegisterPreferredShifts from '@/features/home/api/RegisterPreferredShifts
 import { addDays } from 'date-fns';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState, useRef, useContext } from 'react';
-import { useCookies } from 'react-cookie';
 import { UserContext } from '@/features/context/UserContext';
 import { Shift, ShiftHistory } from '@/features/home/calendar/types';
 import { extractDate, extractYMD } from '@/features/util/datetime';
@@ -27,7 +26,6 @@ export const PreferredShiftForm = (
 	setShifts: React.Dispatch<React.SetStateAction<Array<Shift>>>
 }) => {
 	const user = useContext(UserContext);
-	const [cookies] = useCookies(['token']);
 	const router = useRouter();
 	const shiftSubmission = useContext(ShiftSubmissionContext);
 
@@ -123,7 +121,7 @@ export const PreferredShiftForm = (
 		}
 		const newShift: Shift = {
 			id: null,
-			user_name:	user?.user?.name || "",
+			email:		user?.user?.email || "",
 			date:		new Date(dateRef.current.getTime() + JP_LOCALE).toDateString(),
 			start_time:	startTime,
 			end_time:	endTime,
@@ -163,9 +161,8 @@ export const PreferredShiftForm = (
 	// 希望シフトを提出
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
-		const token = cookies.token;
 
-		const response = await RegisterPreferredShifts(shifts, token);
+		const response = await RegisterPreferredShifts(shifts, user?.user?.email);
 		if (response.status === 200) {
 			router.push('/home');
 			return;
@@ -174,78 +171,90 @@ export const PreferredShiftForm = (
 	}
 
 	return (
-		<div className="col-start-7 col-span-3 border border-slate-300 p-5 min-w-80">
-			<div className="content">
-				<form onSubmit={handleSubmit}>
-					<div className="registerShift grid grid-cols-12">
-						<div className="col-start-1 col-span-7">
-							■ シフトを追加する
-						</div>
-						<div className="col-start-1 col-span-5">
-							{dateRef.current.toLocaleDateString('ja-JP', {
-								month: 'long',
-								day: 'numeric',
-							})}
-						</div>
-						<div className="col-start-7 col-span-6">
+		<div
+			className="col-start-7 col-span-4 border border-slate-300 p-5"
+			style={{ minWidth: '320px', maxWidth: '650px' }}
+		>
+			<form onSubmit={handleSubmit}>
+				<div className="registerShift grid grid-cols-12 gap-4">
+					<div className="col-span-7 font-bold text-left flex items-center">
+						■ シフトを追加する
+					</div>
+
+					<div
+						className="col-span-5 text-right flex items-center justify-end"
+					>
+						{dateRef.current.toLocaleDateString('ja-JP', {
+							month: 'long',
+							day: 'numeric',
+						})}
+					</div>
+
+					<div className="col-span-12 flex flex-col gap-2">
+						<div className="flex justify-end flex-col items-end">
 							<input
 								type="time"
 								value={startTime}
 								onChange={(e) => handleTimeChange(e.target.value, endTime)}
-								className="rounded-md border border-black p-2 mb-1"
+								className="rounded-md border border-black p-1 mb-1"
+								style={{ width: '100px' }}
 							/>
 							<input
 								type="time"
 								value={endTime}
-								onChange={(e)=>handleTimeChange(startTime, e.target.value)}
-								className="rounded-md border border-black p-2"
+								onChange={(e) => handleTimeChange(startTime, e.target.value)}
+								className="rounded-md border border-black p-1"
+								style={{ width: '100px' }}
 							/>
 						</div>
-						<div className="col-start-1 col-span-12">
-							<textarea
-								name="notes"
-								id="notes"
-								cols={30}
-								rows={1}
-								value={notes}
-								className="mt-2 w-full border border-gray-300 rounded-md p-2"
-								placeholder="備考"
-								onChange={handleNotesChange}
-							></textarea>
-						</div>
-						<div className="flex justify-between my-3 col-start-1 col-span-12">
-							<button onClick={handleClear}>
-								<img src="/trash.svg" alt="trash" width={25} />
-							</button>
-							<button
-								onClick={handleRegister}
-								className="bg-orange-500 text-white font-bold p-2 rounded-md"
-							>
-								追加
-							</button>
-						</div>
+						<textarea
+							name="notes"
+							id="notes"
+							cols={30}
+							rows={2}
+							value={notes}
+							className="border border-gray-300 rounded-md p-2"
+							placeholder="備考"
+							onChange={handleNotesChange}
+							style={{ width: '100%' }}
+						></textarea>
 					</div>
-
-					<hr />
-					{calHistory.length !== 0 ? (
-						<div className="registerHistory pt-2">
-							■ 履歴から追加
-							<div className="overflow-y-auto overflow-x-hidden h-40 border p-2">
-								{calHistory}
-							</div>
-						</div>
-					): ""
-					}
-					<div className="flex justify-end mt-3">
+	
+					<div className="col-span-12 flex justify-between items-center my-3">
+						<button onClick={handleClear} type="button">
+							<img src="/trash.svg" alt="trash" width={25} />
+						</button>
 						<button
-							type="submit"
-							className="bg-blue-500 text-white font-bold p-2 rounded-md"
+							onClick={handleRegister}
+							className="bg-orange-500 text-white font-bold p-2 rounded-md"
+							type="button"
+							style={{ height: '40px' }}
 						>
-							提出
+							追加
 						</button>
 					</div>
-				</form>
-			</div>
+				</div>
+	
+				<hr />
+	
+				{calHistory.length !== 0 && (
+					<div className="registerHistory pt-2">
+						■ 履歴から追加
+						<div className="overflow-y-auto overflow-x-hidden h-40 border p-2">
+							{calHistory}
+						</div>
+					</div>
+				)}
+	
+				<div className="flex justify-end mt-3">
+					<button
+						type="submit"
+						className="bg-blue-500 text-white font-bold p-2 rounded-md"
+					>
+						提出
+					</button>
+				</div>
+			</form>
 		</div>
-	)
+	);
 }

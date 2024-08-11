@@ -1,14 +1,14 @@
-import { Shift, Token } from '../calendar/types';
+import { Shift } from '../calendar/types';
 
-const RegisterDraftShifts = async (token: Token | undefined, draftShifts: Shift[]) => {
+const RegisterDraftShifts = async (email: string, draftShifts: Shift[]) => {
 	try {
 		const response = await fetch(process.env.NEXT_PUBLIC_API_URL + '/shift/register_draft_shifts', {
 			method: 'POST',
 			headers: {
-				'Authorization': 'Bearer ' + token?.token,
 				'Content-Type': 'application/json',
 			},
 			body: JSON.stringify({
+				'email': email,
 				'draft_shifts': draftShifts
 			})
 		});
