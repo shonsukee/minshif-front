@@ -4,6 +4,7 @@ import { signIn, getProviders } from "next-auth/react";
 import { AuthError } from "next-auth";
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { Spinner } from "@/features/auth-components/ui/spinner";
 
 const authStyle: Record<string, { className: string; color: string; icon: string }> = {
 	Google: {
@@ -45,7 +46,7 @@ export default function SignInPage() {
 		fetchProviders();
 	}, []);
 
-	if (!providers) return <div>Loading...</div>;
+	if (!providers) return <Spinner size="large">Loading...</Spinner>;
 
 	return (
 		<div>

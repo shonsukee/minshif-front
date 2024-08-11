@@ -3,9 +3,10 @@ import { useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import LoginUser from '@/features/auth/api/LoginUser';
+import { Spinner } from '@/features/auth-components/ui/spinner';
 
 const RedirectPage = () => {
-	const { data: session, status } = useSession();
+	const { data: session } = useSession();
 	const router = useRouter();
 	const invitation_id = sessionStorage.getItem('invitation_id') || '';
 
@@ -40,13 +41,9 @@ const RedirectPage = () => {
 		sendSessionData();
 	}, [session]);
 
-	if (status === 'loading') {
-		return <p>Loading...</p>;
-	}
-
 	return (
 		<div className="flex justify-center items-center h-60v">
-			<h1>Redirecting...</h1>
+			<Spinner size="large">Loading...</Spinner>
 		</div>
 	);
 };

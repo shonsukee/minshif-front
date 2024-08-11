@@ -3,37 +3,52 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import FetchUserInfo from '@/features/auth/api/FetchUserInfo';
 import { User, UserContextType } from '@/features/auth/types/index';
 import { useSession } from 'next-auth/react';
+import { Spinner } from '../auth-components/ui/spinner';
 
 export const UserContext = createContext<UserContextType | null>(null);
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
 	const [user, setUser] = useState<User | null>(null);
+	const [loading, setLoading] = useState(true);
 	const { data: session } = useSession();
 
 	// ログイン状態のユーザ情報を取得
 	useEffect(() => {
 		if (!session?.user || !session?.user.email) {
 			setUser(null);
+			setLoading(false);
 			return;
 		}
 
 		const fetchUserInfo = async (email: string) => {
-			const response = await FetchUserInfo(email) ?? null;
+			setLoading(true);
+			try {
+				const response = await FetchUserInfo(email) ?? null;
 
-			if (response === null || response['error'] || response['user'] === null) {
+				if (response === null || response['error'] || response['user'] === null) {
+					setUser(null);
+				} else {
+					setUser({
+						id: response['user']['id'],
+						name: response['user']['user_name'],
+						email: response['user']['email'],
+						picture: response['user']['picture'],
+					});
+				}
+			} catch (error) {
+				console.error('ユーザ情報の取得中にエラーが発生しました:', error);
 				setUser(null);
-			} else {
-				setUser({
-					id: response['user']['id'],
-					name: response['user']['user_name'],
-					email: response['user']['email'],
-					picture: response['user']['picture'],
-				});
+			} finally {
+				setLoading(false);
 			}
 		};
 
 		fetchUserInfo(session.user.email);
 	}, [session]);
+
+	if (loading) {
+		return <Spinner size="large">Loading...</Spinner>;
+	}
 
 	return (
 		<UserContext.Provider value={{user}}>
