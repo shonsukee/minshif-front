@@ -1,10 +1,9 @@
-const FetchUserInfo = async ({ token }: { token?: string }) => {
+const FetchUserInfo = async (email: string) => {
 	let res;
-	await fetch(process.env.NEXT_PUBLIC_API_URL + '/user/get_user_info', {
-		method: 'POST',
+	await fetch(process.env.NEXT_PUBLIC_API_URL + `/user/get_user_info?email=${email}`, {
+		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
-			'Authorization': 'Bearer ' + token
 		},
 	})
 	.then((response) => response.json())
