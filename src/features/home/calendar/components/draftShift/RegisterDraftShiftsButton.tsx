@@ -1,13 +1,17 @@
-import React, { useContext } from "react";
-import { TokenContext } from "@/features/context/AuthContext";
+import React from "react";
 import RegisterDraftShifts from "@/features/home/api/RegisterDraftShifts";
 import { Shift } from "../../types";
+import { useSession } from "next-auth/react";
 
 const RegisterDraftShiftsButton = ({draftShifts}: {draftShifts: Shift[]}) => {
-	const token = useContext(TokenContext);
-
+	const { data: session } = useSession();
 	const handleRegisterDraftShifts = async () => {
-		const data = await RegisterDraftShifts(token, draftShifts);
+		if (!session?.user?.email) {
+			alert('再ログインしてください');
+			return;
+		}
+
+		const data = await RegisterDraftShifts(session.user.email, draftShifts);
 		if (data.error) {
 			alert(data.error);
 		} else {

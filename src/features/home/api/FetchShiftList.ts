@@ -1,8 +1,9 @@
 import { Shift } from '../calendar/types';
 
-const FetchShiftList = async ( token: string, start_date: string, end_date: string): Promise<Shift[][]> => {
+const FetchShiftList = async ( email: string | null, start_date: string, end_date: string): Promise<Shift[][]> => {
 	try{
 		const query = new URLSearchParams({
+			'fetch_shift[email]': email || '',
 			'fetch_shift[start_date]': start_date,
 			'fetch_shift[end_date]': end_date
 		}).toString();
@@ -11,7 +12,6 @@ const FetchShiftList = async ( token: string, start_date: string, end_date: stri
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json',
-				'Authorization': 'Bearer ' + token
 			}
 		});
 

@@ -2,13 +2,15 @@ export type Staff = {
 	id: number;
 	privilege: string;
 	user_name: string;
+	email: string;
+	picture: string;
 };
 
 export type StaffList = Staff[];
 
 export type Shift = {
 	id: number | null;
-	user_name: string;
+	email: string;
 	date: string;
 	start_time: string;
 	end_time: string;
@@ -45,7 +47,3 @@ export type ViewModeButtonProps = {
 	viewMode: string;
 	setViewMode: React.Dispatch<React.SetStateAction<string>>;
 };
-
-export type Token = {
-	token: string;
-}

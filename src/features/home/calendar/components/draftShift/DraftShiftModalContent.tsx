@@ -40,7 +40,7 @@ export const DraftShiftModalContent = ({
 			const newDraftShifts = prev.filter((draft) => new Date(draft.date).getTime() !== new Date(date).getTime());
 			newDraftShifts.push({
 				id: shift ? shift.id : null,
-				user_name: staff.user_name,
+				email: staff.email,
 				date: date,
 				start_time: formatTimeToISO(start_time),
 				end_time: formatTimeToISO(end_time),
