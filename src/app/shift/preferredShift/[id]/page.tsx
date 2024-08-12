@@ -5,21 +5,31 @@ import { PreferredShiftCalendar } from "@/features/home/calendar/components/pref
 import { startOfDay } from "date-fns";
 import { ShiftSubmissionContext } from "@/features/context/ShiftSubmissionContext";
 import { Shift } from "@/features/home/calendar/types";
+import { Spinner } from "@/features/auth-components/ui/spinner";
 
-export default function SubmitPreferredShift() {
-	const shiftSubmission = useContext(ShiftSubmissionContext);
+export default function SubmitPreferredShift({ params }: { params: any }) {
+	const ShiftSubmissionRequestContext = useContext(ShiftSubmissionContext);
 
-	const startDate = shiftSubmission && shiftSubmission?.shiftSubmissionRequest.length > 0 ? startOfDay(new Date(shiftSubmission.shiftSubmissionRequest[0].start_date)) : startOfDay(new Date());
-	const endDate = shiftSubmission && shiftSubmission?.shiftSubmissionRequest.length > 0 ? startOfDay(new Date(shiftSubmission.shiftSubmissionRequest[0].end_date)) : startOfDay(new Date());
+	// 適する希望シフト提出依頼を取得
+	const shiftSubmissionRequest = ShiftSubmissionRequestContext !== undefined
+	? ShiftSubmissionRequestContext.shiftSubmissionRequest.filter((submission) => {return submission.id == params.id})
+	: [];
+
+	if (shiftSubmissionRequest?.length === 0) {
+		return (
+			<div className="flex justify-center items-center h-60v">
+				<Spinner size="large">Loading...</Spinner>
+			</div>
+		);
+	}
+
+	const startDate = shiftSubmissionRequest && shiftSubmissionRequest?.length > 0 ? startOfDay(new Date(shiftSubmissionRequest[0].start_date)) : startOfDay(new Date());
+	const endDate = shiftSubmissionRequest && shiftSubmissionRequest?.length > 0 ? startOfDay(new Date(shiftSubmissionRequest[0].end_date)) : startOfDay(new Date());
+
 	// 参照している日付
 	const [date, setDate] = useState(startDate);
 	const dateRef = useRef<Date>(startDate);
 
-	useEffect(() => {
-		console.log("submission",shiftSubmission);
-		console.log("request",shiftSubmission?.shiftSubmissionRequest);
-		console.log("start",startDate);
-	},[date]);
 	// 仮希望シフト
 	const [shifts, setShifts] = useState<Array<Shift>>([]);
 
