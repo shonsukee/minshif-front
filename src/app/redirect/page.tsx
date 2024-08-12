@@ -39,7 +39,7 @@ const RedirectPage = () => {
 			}
 		};
 		sendSessionData();
-	}, [session]);
+	}, [session, invitation_id, router]);
 
 	return (
 		<div className="flex justify-center items-center h-60v">

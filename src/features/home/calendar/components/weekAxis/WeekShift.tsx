@@ -7,6 +7,7 @@ import DraftShiftModal from "../draftShift/DraftShiftModal";
 import { addDays } from "date-fns";
 import { format_time } from "@/features/util/datetime";
 import { useSession } from "next-auth/react";
+import Image from "next/image";
 
 export const WeekShift = ({
 	dayList,
@@ -234,7 +235,13 @@ export const WeekShift = ({
 					<ul className="shiftList">
 					{Object.entries(staffList).map(([key, staff]) => (
 						<li key={key} className="timeslotItem flex justify-center items-center ">
-							<img src={staff.picture} alt={`staff-${key}`} className="w-10 h-10 mr-3 rounded-lg" />
+							<Image
+								src={staff.picture}
+								alt={`staff-${key}`}
+								className="w-10 h-10 mr-3 rounded-lg"
+								width={40}
+								height={40}
+							/>
 							{staff.user_name}
 						</li>
 					))}
