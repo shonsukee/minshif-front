@@ -1,4 +1,4 @@
-import CustomLink from "@/features/auth-components/custom-link"
+import CustomLink from "@/features/components/custom-link"
 
 export default function Footer() {
 	return (

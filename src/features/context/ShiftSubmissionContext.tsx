@@ -3,7 +3,7 @@ import React, { createContext, useContext, useState, ReactNode, useEffect } from
 import FetchPreferredShiftPeriod from '../home/api/FetchPreferredShiftPeriod';
 import { ShiftSubmissionRequest, ShiftSubmissionContextType } from '@/features/auth/types/index';
 import { useSession } from 'next-auth/react';
-import { Spinner } from '../auth-components/ui/spinner';
+import { Spinner } from '../components/ui/spinner';
 
 export const ShiftSubmissionContext = createContext<ShiftSubmissionContextType | undefined>(undefined);
 

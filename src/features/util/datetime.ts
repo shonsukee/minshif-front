@@ -53,6 +53,15 @@ export const extractTime = (date: string): number => {
 }
 
 /**
+ * 日付のstring型から時間を抽出し、UI表示用に整形
+ * @param datetime - 日付のstring型
+ * @returns 時間のstring型
+ */
+export const extractTimeforUI = (datetime: string): string => {
+	return datetime.split('T')[1].split(':').slice(0, 2).join(':');
+};
+
+/**
  * 日付のstring型から日付を抽出
  * @param date - 日付のstring型
  * @returns 日付のnumber型

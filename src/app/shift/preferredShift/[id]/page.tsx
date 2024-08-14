@@ -5,7 +5,7 @@ import { PreferredShiftCalendar } from "@/features/home/calendar/components/pref
 import { startOfDay } from "date-fns";
 import { ShiftSubmissionContext } from "@/features/context/ShiftSubmissionContext";
 import { Shift } from "@/features/home/calendar/types";
-import { Spinner } from "@/features/auth-components/ui/spinner";
+import { Spinner } from "@/features/components/ui/spinner";
 
 export default function SubmitPreferredShift({ params }: { params: any }) {
 	const ShiftSubmissionRequestContext = useContext(ShiftSubmissionContext);

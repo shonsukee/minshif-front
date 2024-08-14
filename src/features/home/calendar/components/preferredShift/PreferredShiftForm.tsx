@@ -53,7 +53,7 @@ export const PreferredShiftForm = (
 			setEndTime('18:00');
 			setNotes('');
 		}
-	}, [shifts]);
+	}, [shifts, dateRef]);
 
 	// 仮希望シフトの履歴を更新
 	useEffect(() => {
