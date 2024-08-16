@@ -8,7 +8,7 @@ import {
 	SelectLabel,
 	SelectTrigger,
 	SelectValue,
-} from "@/features/home/sidebar/components/select";
+} from "@/features/components/ui/select";
 import { useRouter } from "next/navigation";
 import { ShiftSubmissionRequest } from "@/features/auth/types";
 
