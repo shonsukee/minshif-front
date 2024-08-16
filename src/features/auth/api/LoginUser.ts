@@ -17,7 +17,6 @@ const LoginUser = async (code: string, invitation_id: string | null, user: User)
 		if (!response.ok) {
 			throw new Error('ログインに失敗しました');
 		}
-		console.log("res", response);
 
 		const data = await response.json();
 		return data;
