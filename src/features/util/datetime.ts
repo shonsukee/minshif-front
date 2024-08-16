@@ -29,7 +29,6 @@ export const format_time = (time: string) => {
 	return time.split('T')[1].slice(0, 5);
 }
 
-
 /**
  * 開始時間が終了時間より未来の時間を選択しているか判定する関数
  * @param startTime - 比較対象の開始時間（HH:MM形式）
@@ -45,11 +44,13 @@ export const isStartTimeBeforeEndTime = (startTime: string, endTime: string): bo
 /**
  * 日付のstring型から時間を抽出
  * @param date - 日付のstring型
- * @returns 時間のnumber型
+ * @returns 時間のstring型
  */
-export const extractTime = (date: string): number => {
-	const date_Obj = new Date(date);
-	return date_Obj.getTime();
+export const extractTime = (date: Date): string => {
+	const hours = String(date.getHours()).padStart(2, '0');
+	const minutes = String(date.getMinutes()).padStart(2, '0');
+
+	return `${hours}:${minutes}`;
 }
 
 /**
@@ -59,6 +60,15 @@ export const extractTime = (date: string): number => {
  */
 export const extractTimeforUI = (datetime: string): string => {
 	return datetime.split('T')[1].split(':').slice(0, 2).join(':');
+};
+
+/**
+ * 日付のstring型から時間を抽出し、UI表示用に整形
+ * @param datetime - 日付のstring型
+ * @returns 時間のstring型
+ */
+export const extractDateforUI = (datetime: string): string => {
+	return datetime.split('T')[0];
 };
 
 /**
@@ -83,3 +93,16 @@ export const extractYMD = (date: string): number => {
 	const day = ('0' + date_Obj.getDate()).slice(-2);
 	return parseInt(`${year}${month}${day}`, 10);
 }
+
+/**
+ * 指定された日付オブジェクトからYYYY-MM-DD形式の日付文字列を返す関数
+ * @param dateStr - JavaScriptのDateオブジェクトから生成された文字列
+ * @returns YYYY-MM-DD形式の日付文字列
+ */
+export const formatDateToISO = (date: Date): string => {
+	const year = date.getFullYear();
+	const month = String(date.getMonth() + 1).padStart(2, '0');
+	const day = String(date.getDate()).padStart(2, '0');
+
+	return `${year}-${month}-${day}`;
+};
