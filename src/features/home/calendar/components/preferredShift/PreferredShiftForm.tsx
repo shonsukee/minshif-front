@@ -7,6 +7,7 @@ import React, { useEffect, useState, useRef, useContext } from 'react';
 import { UserContext } from '@/features/context/UserContext';
 import { Shift, ShiftHistory } from '@/features/home/calendar/types';
 import { extractDate, extractYMD } from '@/features/util/datetime';
+import Image from 'next/image';
 
 const JP_LOCALE = 9 * 3600000;
 
@@ -52,7 +53,7 @@ export const PreferredShiftForm = (
 			setEndTime('18:00');
 			setNotes('');
 		}
-	}, [dateRef.current, shifts]);
+	}, [shifts, dateRef]);
 
 	// 仮希望シフトの履歴を更新
 	useEffect(() => {
@@ -219,11 +220,9 @@ export const PreferredShiftForm = (
 							style={{ width: '100%' }}
 						></textarea>
 					</div>
-	
+
 					<div className="col-span-12 flex justify-between items-center my-3">
-						<button onClick={handleClear} type="button">
-							<img src="/trash.svg" alt="trash" width={25} />
-						</button>
+						<Image src="/trash.svg" alt="trash" width={25} height={25} onClick={handleClear} />
 						<button
 							onClick={handleRegister}
 							className="bg-orange-500 text-white font-bold p-2 rounded-md"
@@ -234,9 +233,9 @@ export const PreferredShiftForm = (
 						</button>
 					</div>
 				</div>
-	
+
 				<hr />
-	
+
 				{calHistory.length !== 0 && (
 					<div className="registerHistory pt-2">
 						■ 履歴から追加
@@ -245,7 +244,7 @@ export const PreferredShiftForm = (
 						</div>
 					</div>
 				)}
-	
+
 				<div className="flex justify-end mt-3">
 					<button
 						type="submit"

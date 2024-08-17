@@ -1,5 +1,5 @@
-import { MainNav } from "@/features/auth-components/main-nav"
-import UserButton from "@/features/auth-components/user-button"
+import { MainNav } from "@/features/components/main-nav"
+import UserButton from "@/features/components/user-button"
 
 export default function Header() {
 	return (

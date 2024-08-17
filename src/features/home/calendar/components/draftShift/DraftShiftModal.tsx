@@ -21,8 +21,14 @@ const DraftShiftModal = ({
 
 	return (
 		<div className="overlay modalDraftColor" onClick={onClose}>
-			<div className="content" onClick={(e) => {e.stopPropagation()}}>
-				<DraftShiftModalContent date={date} staff={staff} shift={shift} setDraftShifts={setDraftShifts} onClose={onClose} />
+			<div className="content" onClick={(e) => e.stopPropagation()}>
+				<DraftShiftModalContent
+					date={date}
+					staff={staff}
+					shift={shift}
+					setDraftShifts={setDraftShifts}
+					onClose={onClose}
+				/>
 			</div>
 		</div>
 	);

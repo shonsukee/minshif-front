@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import LoginUser from '@/features/auth/api/LoginUser';
-import { Spinner } from '@/features/auth-components/ui/spinner';
+import { Spinner } from '@/features/components/ui/spinner';
 
 const RedirectPage = () => {
 	const { data: session } = useSession();
@@ -39,7 +39,7 @@ const RedirectPage = () => {
 			}
 		};
 		sendSessionData();
-	}, [session]);
+	}, [session, invitation_id, router]);
 
 	return (
 		<div className="flex justify-center items-center h-60v">
