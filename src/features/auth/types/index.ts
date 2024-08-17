@@ -23,3 +23,16 @@ export type ShiftSubmissionContextType = {
 	shiftSubmissionRequest: ShiftSubmissionRequest[];
 	setShiftSubmissionRequest: React.Dispatch<React.SetStateAction<ShiftSubmissionRequest[]>>;
 }
+
+export type Membership = {
+	id: number;
+	user_id: string;
+	store_id: string;
+	current_store: boolean;
+	privilege: string;
+	calendar_id: string;
+}
+
+export type MembershipContextType = {
+	membership: Membership | null;
+}

@@ -8,8 +8,10 @@ import { format, addWeeks, subWeeks, startOfWeek, endOfWeek } from "date-fns";
 import "@/features/home/Home.css";
 import { Shift } from "@/features/home/calendar/types";
 import { SelectScrollable } from "@/features/home/sidebar/components/ShiftSubmissionList";
+import { MembershipContext } from "@/features/context/MembershipContext";
 
 export default function Home() {
+	const membership = useContext(MembershipContext);
 	const [date, setDate] = useState(new Date());
 	const [viewMode, setViewMode] = useState('week');
 
@@ -54,7 +56,13 @@ export default function Home() {
 		<div>
 			<div className="calendar-root">
 				<div className="flex">
-					<SubmitShiftModal />
+					{/* シフト提出依頼 - without staff */}
+					{(
+						membership?.membership?.privilege === "manager" ||
+						membership?.membership?.privilege === "developer"
+					) && (
+						<SubmitShiftModal />
+					)}
 					<SelectScrollable />
 					<ViewModeButton viewMode={viewMode} setViewMode={setViewMode} />
 					<button className="dateAdjustBtn" onClick={handleDecrement}> {"<"} </button>
