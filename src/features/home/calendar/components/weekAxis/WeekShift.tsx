@@ -1,6 +1,6 @@
 import { DAY_LIST } from "../constant/index";
 import { DayList, Staff, StaffList, Shift, ShiftList, setDraftShifts } from "../../types/index";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import FetchStaffList from "@/features/home/api/FetchStaffList";
 import FetchShiftList from "@/features/home/api/FetchShiftList";
 import DraftShiftModal from "../draftShift/DraftShiftModal";
@@ -9,6 +9,7 @@ import { format_time } from "@/features/util/datetime";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { extractTimeforUI } from "@/features/util/datetime";
+import { MembershipContext } from "@/features/context/MembershipContext";
 
 export const WeekShift = ({
 	dayList,
@@ -20,6 +21,7 @@ export const WeekShift = ({
 	setDraftShifts: setDraftShifts
 }) => {
 	const { data: session } = useSession();
+	const membership = useContext(MembershipContext);
 	const [staffList, setStaffList] = useState<StaffList>([]);
 	const [shiftList, setShiftList] = useState<ShiftList>([]);
 	const [isOpen, setIsOpen] = useState(false);
@@ -94,8 +96,10 @@ export const WeekShift = ({
 	const EmptyCell = ({ shiftIndex, date, staff, unregisteredShift }: { shiftIndex: string, date: string, staff: Staff, unregisteredShift: Shift | null }) => (
 		<div
 			key={shiftIndex}
-			onClick={() => handleCellClick(staff, date, unregisteredShift)}
+			onClick={membership?.membership?.privilege === "manager" ? () => handleCellClick(staff, date, unregisteredShift) : undefined}
+            // className={`cell ${membership?.membership?.privilege !== "staff" ? "pointer-events-none" : ""}`}
 			className="cell"
+
 		/>
 	);
 
@@ -137,18 +141,22 @@ export const WeekShift = ({
 						) : (
 							<EmptyCell shiftIndex={`empty-registered-${staffIndex}`} date={date} staff={staff} unregisteredShift={unregisteredShift} />
 						)}
-						{unregisteredShift ? (
-							<div
-								key={`unregistered-${staffIndex}-${unregisteredShift.id}`}
-								onClick={() => handleCellClick(staff, date, unregisteredShift)}
-								className="cell w-full"
-							>
-								<div className="bg-red-500 rounded-lg flex items-center justify-center hover:shadow-md hover:bg-red-600">
-									{extractTimeforUI(unregisteredShift.start_time)} ~ {extractTimeforUI(unregisteredShift.end_time)}
-								</div>
-							</div>
-						) : (
+						{membership && membership.membership?.privilege === "staff" ? (
 							<EmptyCell shiftIndex={`empty-registered-${staffIndex}`} date={date} staff={staff} unregisteredShift={null} />
+						) : (
+							unregisteredShift ? (
+								<div
+									key={`unregistered-${staffIndex}-${unregisteredShift.id}`}
+									onClick={() => handleCellClick(staff, date, unregisteredShift)}
+									className="cell w-full"
+								>
+									<div className="bg-red-500 rounded-lg flex items-center justify-center hover:shadow-md hover:bg-red-600">
+										{extractTimeforUI(unregisteredShift.start_time)} ~ {extractTimeforUI(unregisteredShift.end_time)}
+									</div>
+								</div>
+							) : (
+								<EmptyCell shiftIndex={`empty-registered-${staffIndex}`} date={date} staff={staff} unregisteredShift={null} />
+							)
 						)}
 					</div>
 				);
