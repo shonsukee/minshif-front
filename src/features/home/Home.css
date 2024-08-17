@@ -61,20 +61,27 @@
  * サイドバー
  */
 /** シフト提出 **/
-#overlay{
+.overlay{
 	position:fixed;
 	top:0;
 	left:0;
 	width:100%;
 	height:100%;
-	background-color:rgba(0,0,0,0.5);
 	z-index: 2;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 }
 
-#content {
+.modalSubmitColor {
+	background-color:rgba(0,0,0,0.5);
+}
+
+.modalDraftColor {
+	background-color:rgba(0,0,0,0.1);
+}
+
+.content {
 	width: 50%;
 	padding: 1em;
 	background-color: #fff;
