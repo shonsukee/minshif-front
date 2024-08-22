@@ -9,6 +9,9 @@ import "@/features/home/Home.css";
 import { Shift } from "@/features/home/calendar/types";
 import { SelectScrollable } from "@/features/home/sidebar/components/ShiftSubmissionList";
 import { MembershipContext } from "@/features/context/MembershipContext";
+import Link from "next/link";
+import { Button, buttonVariants } from "@/features/components/ui/button";
+import { ChevronLeftIcon, ChevronRightIcon } from "@radix-ui/react-icons";
 
 export default function Home() {
 	const membership = useContext(MembershipContext);
@@ -63,10 +66,19 @@ export default function Home() {
 					) && (
 						<SubmitShiftModal />
 					)}
+
+					<Link href="/store/create" className={buttonVariants({ variant: "outline" })}>
+						店舗作成
+					</Link>
+
 					<SelectScrollable />
 					<ViewModeButton viewMode={viewMode} setViewMode={setViewMode} />
-					<button className="dateAdjustBtn" onClick={handleDecrement}> {"<"} </button>
-					<button className="dateAdjustBtn" onClick={handleIncrement}> {">"} </button>
+					<Button variant="outline" size="icon" onClick={handleDecrement}>
+						<ChevronLeftIcon className="h-4 w-4" />
+					</Button>
+					<Button variant="outline" size="icon" onClick={handleIncrement}>
+						<ChevronRightIcon className="h-4 w-4" />
+					</Button>
 					<div className="text-xl flex items-center">
 						<span>{ _start_date === _end_date ? _start_date : _start_date + "〜" + _end_date }</span>
 					</div>
