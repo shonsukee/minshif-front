@@ -1,31 +1,36 @@
-import Image from 'next/image'
-import Button from '@/app/components/elements/_arrow_button'
+import Image from 'next/image';
 import '@/app/globals.css';
+import { auth } from "@/auth";
 
+export default async function StaticPage() {
+	const session = await auth();
 
-export default function StaticPage() {
 	return (
 		<>
 			<div>
-				<div className="h-60v grid grid-cols-12 m-static">
-					<div className="col-span-12 justify-self-center self-center xl:col-span-5">
-						<h1 className="text-4xl font-bold mb-2 whitespace-nowrap">シフトの変更もラクラク管理。</h1>
-						<h2 className="text-xl mb-4">minshifは、予定を一元管理する<br />スケジュールプラットフォームです。</h2>
-						<div className="">
-							<Button name={'ログイン'} href={'/login'}/>
+				<div className="grid grid-cols-12">
+					<div className="col-span-12 md:self-center xl:justify-self-start justify-self-center xl:col-span-5 self-start">
+						<h1 className="text-xl font-bold mb-2 whitespace-nowrap">シフト管理をスマートに。</h1>
+						<h1 className="text-5xl font-bold mb-2 whitespace-nowrap">minshif</h1>
+					</div>
+					<div className="col-span-12 xl:col-span-7 xl:block">
+						<div className="relative w-full h-full" style={{ width: '100%' }}>
+							<Image
+								alt='time_shift'
+								src='/time_shift.png'
+								className="object-contain"
+								width={1000}
+								height={300}
+							/>
 						</div>
 					</div>
-					<div className="col-span-7 self-center basis-8/12 hidden xl:inline-block" style={{width: '100%', height: '100%', position: 'relative'}}>
-						<Image
-							alt='time_shift'
-							src='/time_shift.png'
-							className="object-cover"
-							sizes='(max-width: 768px) 100vw, 50vw'
-							fill
-						/>
+					<div className="flex flex-col col-span-12 mt-5 bg-gray-100 rounded-md">
+						<pre className="py-6 px-4 whitespace-pre-wrap break-all">
+							{JSON.stringify(session, null, 2)}
+						</pre>
 					</div>
 				</div>
 			</div>
 		</>
-	)
+	);
 }
