@@ -26,6 +26,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 		signIn: "/signin",
 		signOut: "/",
 	},
+	secret: process.env.NEXTAUTH_SECRET,
 	basePath: "/api/auth",
 	callbacks: {
 		redirect: async ({ url, baseUrl }) => {
