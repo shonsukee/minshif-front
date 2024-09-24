@@ -1,6 +1,8 @@
 import Image from 'next/image';
 import '@/app/globals.css';
 import { auth } from "@/auth";
+import getConfig from "next/config";
+const { basePath } = getConfig().publicRuntimeConfig;
 
 export default async function StaticPage() {
 	const session = await auth();
@@ -17,7 +19,7 @@ export default async function StaticPage() {
 						<div className="relative w-full h-full" style={{ width: '100%' }}>
 							<Image
 								alt='time_shift'
-								src='/time_shift.png'
+								src={`${basePath}/time_shift.png`}
 								className="object-contain"
 								width={1000}
 								height={300}
