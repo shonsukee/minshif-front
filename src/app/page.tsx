@@ -19,7 +19,7 @@ export default async function StaticPage() {
 						<div className="relative w-full h-full" style={{ width: '100%' }}>
 							<Image
 								alt='time_shift'
-								src={`${basePath}/time_shift.png`}
+								src='/time_shift.png'
 								className="object-contain"
 								width={1000}
 								height={300}
