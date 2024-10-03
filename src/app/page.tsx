@@ -1,8 +1,6 @@
 import Image from 'next/image';
 import '@/app/globals.css';
 import { auth } from "@/auth";
-import getConfig from "next/config";
-const { basePath } = getConfig().publicRuntimeConfig;
 
 export default async function StaticPage() {
 	const session = await auth();
