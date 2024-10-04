@@ -1,24 +1,27 @@
 import { DAY_LIST } from "../constant/index";
 import { DayList, Staff, StaffList, Shift, ShiftList, setDraftShifts } from "../../types/index";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import FetchStaffList from "@/features/home/api/FetchStaffList";
 import FetchShiftList from "@/features/home/api/FetchShiftList";
 import DraftShiftModal from "../draftShift/DraftShiftModal";
 import { addDays } from "date-fns";
 import { format_time } from "@/features/util/datetime";
 import { useSession } from "next-auth/react";
+import Image from "next/image";
+import { extractTimeforUI } from "@/features/util/datetime";
+import { MembershipContext } from "@/features/context/MembershipContext";
 
 export const WeekShift = ({
 	dayList,
 	draftShifts,
 	setDraftShifts
-} : {
+}: {
 	dayList: DayList,
 	draftShifts: Shift[],
 	setDraftShifts: setDraftShifts
 }) => {
-	// セッションを管理
 	const { data: session } = useSession();
+	const membership = useContext(MembershipContext);
 	const [staffList, setStaffList] = useState<StaffList>([]);
 	const [shiftList, setShiftList] = useState<ShiftList>([]);
 	const [isOpen, setIsOpen] = useState(false);
@@ -65,15 +68,6 @@ export const WeekShift = ({
 	}, [dayList, session]);
 
 	/**
-	 * 時間の抽出
-	 * @param datetime: string
-	 * @returns string
-	 */
-	const extractTime = (datetime: string) => {
-		return datetime.split('T')[1].split(':').slice(0, 2).join(':');
-	};
-
-	/**
 	 * シフトが登録されているか
 	 * @param staffShiftList: Shift[]
 	 * @param date: string
@@ -85,6 +79,13 @@ export const WeekShift = ({
 		return staffShiftList.filter((shift) => shift.date === date && shift.email === staff.email);
 	};
 
+	const handleCellClick = (staff: Staff, date: string, shift: Shift | null) => {
+		setSelectedStaff(staff);
+		setSelectedDate(date);
+		setSelectedShift(shift);
+		setIsOpen(true);
+	};
+
 	/**
 	 * 空のセル
 	 * @param staffIndex
@@ -92,107 +93,76 @@ export const WeekShift = ({
 	 * @param staff
 	 * @returns jsx
 	 */
-	const EmptyCell = ({ shiftIndex, date, staff, unregisteredShift }: { shiftIndex: string, date: string, staff: Staff, unregisteredShift: Shift | null }) => {
-		return (
-			<div
-				key={shiftIndex}
-				onClick={() => {
-					setIsOpen(true);
-					setSelectedStaff(staff);
-					setSelectedDate(date);
-					setSelectedShift(unregisteredShift);
-				}}
-				className="cell"
-			/>
-		);
-	};
+	const EmptyCell = ({ shiftIndex, date, staff, unregisteredShift }: { shiftIndex: string, date: string, staff: Staff, unregisteredShift: Shift | null }) => (
+		<div
+			key={shiftIndex}
+			onClick={membership?.membership?.privilege === "manager" ? () => handleCellClick(staff, date, unregisteredShift) : undefined}
+            // className={`cell ${membership?.membership?.privilege !== "staff" ? "pointer-events-none" : ""}`}
+			className="cell"
+
+		/>
+	);
 
 	/**
 	 * シフトのセル
 	 * @param date
 	 * @returns jsx
 	 */
-	const Cell = ({ date }: { date: string }) => {
-		return (
-			<>
-				{staffList.map((staff, staffIndex) => {
-					const shifts = findShifts(shiftList[staffIndex], date, staff);
-					const draftShift = draftShifts.find((draft) => draft.date === date && draft.email === staff.email);
-					const registeredShift = shifts.find(shift => shift.is_registered) ?? null;
-					const unregisteredShift = shifts.find(shift => !shift.is_registered) ?? null;
+	const Cell = ({ date }: { date: string }) => (
+		<>
+			{staffList.map((staff, staffIndex) => {
+				const shifts = findShifts(shiftList[staffIndex], date, staff);
+				const draftShift = draftShifts.find((draft) => draft.date === date && draft.email === staff.email);
+				const registeredShift = shifts.find(shift => shift.is_registered) ?? null;
+				const unregisteredShift = shifts.find(shift => !shift.is_registered) ?? null;
 
-					return (
-						<div key={`staff-${staffIndex}`} className="staff">
-							{draftShift ? (
-								<div
-									key={`draft-${staffIndex}-${draftShift.id}`}
-									onClick={() => {
-										setIsOpen(true);
-										setSelectedStaff(staff);
-										setSelectedDate(date);
-										setSelectedShift(draftShift);
-									}}
-									className="cell w-full"
-								>
-									<div className="bg-lime-500 rounded-lg flex items-center justify-center hover:shadow-md hover:bg-lime-600">
-										{format_time(draftShift.start_time)} ~ {format_time(draftShift.end_time)}
-									</div>
+				return (
+					<div key={`staff-${staffIndex}`} className="staff">
+						{draftShift ? (
+							<div
+								key={`draft-${staffIndex}-${draftShift.id}`}
+								onClick={() => handleCellClick(staff, date, draftShift)}
+								className="cell w-full"
+							>
+								<div className="bg-lime-500 rounded-lg flex items-center justify-center hover:shadow-md hover:bg-lime-600">
+									{format_time(draftShift.start_time)} ~ {format_time(draftShift.end_time)}
 								</div>
-							) : (
-								registeredShift ? (
-									<div
-										key={`registered-${staffIndex}-${registeredShift.id}`}
-										onClick={() => {
-											setIsOpen(true);
-											setSelectedStaff(staff);
-											setSelectedDate(date);
-											setSelectedShift(registeredShift);
-										}}
-										className="cell w-full"
-									>
-										<div className="bg-amber-500 rounded-lg flex items-center justify-center hover:shadow-md hover:bg-amber-600">
-											{extractTime(registeredShift.start_time)} ~ {extractTime(registeredShift.end_time)}
-										</div>
-									</div>
-								) : (
-									<EmptyCell shiftIndex={`empty-registered-${staffIndex}`} date={date} staff={staff} unregisteredShift={unregisteredShift} />
-								)
-							)}
-							{unregisteredShift ? (
+							</div>
+						) : registeredShift ? (
+							<div
+								key={`registered-${staffIndex}-${registeredShift.id}`}
+								onClick={() => handleCellClick(staff, date, registeredShift)}
+								className="cell w-full"
+							>
+								<div className="bg-amber-500 rounded-lg flex items-center justify-center hover:shadow-md hover:bg-amber-600">
+									{extractTimeforUI(registeredShift.start_time)} ~ {extractTimeforUI(registeredShift.end_time)}
+								</div>
+							</div>
+						) : (
+							<EmptyCell shiftIndex={`empty-registered-${staffIndex}`} date={date} staff={staff} unregisteredShift={unregisteredShift} />
+						)}
+						{membership && membership.membership?.privilege === "staff" ? (
+							<EmptyCell shiftIndex={`empty-registered-${staffIndex}`} date={date} staff={staff} unregisteredShift={null} />
+						) : (
+							unregisteredShift ? (
 								<div
 									key={`unregistered-${staffIndex}-${unregisteredShift.id}`}
-									onClick={() => {
-										setIsOpen(true);
-										setSelectedStaff(staff);
-										setSelectedDate(date);
-										setSelectedShift(unregisteredShift);
-									}}
+									onClick={() => handleCellClick(staff, date, unregisteredShift)}
 									className="cell w-full"
 								>
 									<div className="bg-red-500 rounded-lg flex items-center justify-center hover:shadow-md hover:bg-red-600">
-										{extractTime(unregisteredShift.start_time)} ~ {extractTime(unregisteredShift.end_time)}
+										{extractTimeforUI(unregisteredShift.start_time)} ~ {extractTimeforUI(unregisteredShift.end_time)}
 									</div>
 								</div>
 							) : (
 								<EmptyCell shiftIndex={`empty-registered-${staffIndex}`} date={date} staff={staff} unregisteredShift={null} />
-							)}
-						</div>
-					);
-				})}
-				{/* シフト登録モーダル */}
-				{selectedStaff && (
-					<DraftShiftModal
-						isOpen={isOpen}
-						date={selectedDate}
-						staff={selectedStaff}
-						shift={selectedShift}
-						setDraftShifts={setDraftShifts}
-						onClose={() => setIsOpen(false)}
-					/>
-				)}
-			</>
-		);
-	};
+							)
+						)}
+					</div>
+				);
+			})}
+		</>
+	);
 
 	return (
 		<div>
@@ -232,12 +202,18 @@ export const WeekShift = ({
 			<div className="shiftContainer">
 				<div className="timeslotBox">
 					<ul className="shiftList">
-					{Object.entries(staffList).map(([key, staff]) => (
-						<li key={key} className="timeslotItem flex justify-center items-center ">
-							<img src={staff.picture} alt={`staff-${key}`} className="w-10 h-10 mr-3 rounded-lg" />
-							{staff.user_name}
-						</li>
-					))}
+						{Object.entries(staffList).map(([key, staff]) => (
+							<li key={key} className="timeslotItem flex justify-center items-center ">
+								<Image
+									src={staff.picture}
+									alt={`staff-${key}`}
+									className="w-10 h-10 mr-3 rounded-lg"
+									width={40}
+									height={40}
+								/>
+								{staff.user_name}
+							</li>
+						))}
 					</ul>
 				</div>
 				<div className="element-space"/>
@@ -266,6 +242,18 @@ export const WeekShift = ({
 					</div>
 				</div>
 			</div>
+
+			{/* シフト登録モーダル */}
+			{isOpen && selectedStaff && (
+				<DraftShiftModal
+					isOpen={isOpen}
+					date={selectedDate}
+					staff={selectedStaff}
+					shift={selectedShift}
+					setDraftShifts={setDraftShifts}
+					onClose={() => setIsOpen(false)}
+				/>
+			)}
 		</div>
 	);
 };

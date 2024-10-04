@@ -14,10 +14,22 @@ const buttonVariants = cva(
 					"bg-destructive text-destructive-foreground hover:bg-destructive/90",
 				outline:
 					"border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+				solid:
+					"border border-input bg-background hover:bg-accent hover:text-accent-foreground",
 				secondary:
 					"bg-secondary text-secondary-foreground hover:bg-secondary/80",
 				ghost: "hover:bg-accent hover:text-accent-foreground",
 				link: "text-primary underline-offset-4 hover:underline",
+				// カスタム
+				success: "bg-green-500 text-white hover:bg-green-400",
+				warning: "bg-yellow-500 text-white hover:bg-yellow-400",
+				info: "bg-blue-500 text-white hover:bg-blue-400",
+				danger: "bg-red-500 text-white hover:bg-red-400",
+				light: "bg-gray-100 text-gray-800 hover:bg-gray-200",
+				dark: "bg-gray-800 text-white hover:bg-gray-700",
+				tertiary: "bg-purple-500 text-white hover:bg-purple-400",
+				accent: "bg-pink-500 text-white hover:bg-pink-400",
+				orange: "bg-orange-500 text-white hover:bg-orange-400",
 			},
 			size: {
 				default: "h-10 px-4 py-2",
