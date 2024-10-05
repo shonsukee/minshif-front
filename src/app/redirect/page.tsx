@@ -18,7 +18,7 @@ const RedirectPage = () => {
 					invitation_id,
 					{
 						id: session.user?.id as string,
-						name: session.user?.name as string,
+						user_name: session.user?.name as string,
 						email: session.user?.email as string,
 						picture: session.user?.image as string,
 					}
