@@ -10,6 +10,12 @@ export default function Footer() {
 				<CustomLink href="https://github.com/shonsukee/minshif-back">
 					Back source on GitHub
 				</CustomLink>
+				<CustomLink href={`${process.env.AUTH_URL}/policy/terms`}>
+					利用規約
+				</CustomLink>
+				<CustomLink href={`${process.env.AUTH_URL}/policy/privacy`}>
+					プライバシーポリシー
+				</CustomLink>
 			</div>
 			<div className="flex gap-2 justify-start items-center">
 				<span className="text-slate-400 text-sm">© 2024 minshif</span>
