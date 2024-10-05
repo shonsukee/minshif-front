@@ -35,7 +35,17 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 			try {
 				const { pathname } = request.nextUrl;
 				// Authentication required except for the root and sign-in pages.
-				const publicPaths = ["/", "/logo.png", "/time_shift.png", "/icons", "/api/auth/signin", "/redirect"];
+				const publicPaths = [
+					"/",
+					"/logo.png",
+					"/logo.svg",
+					"/time_shift.png",
+					"/icons",
+					"/api/auth/signin",
+					"/redirect",
+					"/policy/terms",
+					"/policy/privacy",
+				];
 				if (publicPaths.includes(pathname)) return true;
 
 				return !!auth;
