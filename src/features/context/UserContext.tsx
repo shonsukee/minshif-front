@@ -30,7 +30,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 				} else {
 					setUser({
 						id: response['user']['id'],
-						name: response['user']['user_name'],
+						user_name: response['user']['user_name'],
 						email: response['user']['email'],
 						picture: response['user']['picture'],
 					});
