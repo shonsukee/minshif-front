@@ -1,5 +1,5 @@
 "use client"
-import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useEffect, useRef } from 'react';
 import FetchPreferredShiftPeriod from '../home/api/FetchPreferredShiftPeriod';
 import { ShiftSubmissionRequest, ShiftSubmissionContextType } from '@/features/auth/types/index';
 import { useSession } from 'next-auth/react';
@@ -11,35 +11,69 @@ export const ShiftSubmissionProvider = ({ children }: { children: ReactNode }) =
 	const [shiftSubmissionRequest, setShiftSubmissionRequest] = useState<ShiftSubmissionRequest[]>([]);
 	const [loading, setLoading] = useState(true);
 	const { data: session } = useSession();
+	const timeoutIdRef = useRef<NodeJS.Timeout | null>(null);
+
+	const fetchSubmissionInfo = async (email: string) => {
+		setLoading(true);
+		try {
+			const result = await FetchPreferredShiftPeriod(email);
+			if (result['data'].length > 0) {
+				setShiftSubmissionRequest(result['data']);
+			} else {
+				setShiftSubmissionRequest([]);
+			}
+		} catch (error) {
+			console.error('シフト情報の取得中にエラーが発生しました:', error);
+			setShiftSubmissionRequest([]);
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	// セッションの有効期限が来たらユーザ情報を再取得
+	const startTimeout = () => {
+		if (session?.user?.email && session.expires) {
+			const expiresAt = new Date(session.expires).getTime();
+			const now = new Date().getTime();
+			const remainingTime = expiresAt - now;
+			const email = session.user.email;
+
+			if (remainingTime > 0) {
+				timeoutIdRef.current = setTimeout(() => {
+					fetchSubmissionInfo(email);
+				}, remainingTime);
+			} else {
+				fetchSubmissionInfo(email);
+			}
+		}
+	};
+
+	// タイムアウトをクリア
+	const clearCurrentTimeout = () => {
+		if (timeoutIdRef.current) {
+			clearTimeout(timeoutIdRef.current);
+			timeoutIdRef.current = null;
+		}
+	};
 
 	useEffect(() => {
-		if (!session?.user || !session?.user.email) {
+		// 初回ロード時にユーザ情報を取得
+		if (session?.user?.email && !shiftSubmissionRequest) {
+			setLoading(true);
+			fetchSubmissionInfo(session.user.email);
+		} else if (!session?.user?.email) {
 			setShiftSubmissionRequest([]);
 			setLoading(false);
-			return;
+			return
 		}
 
-		const fetchSubmissionInfo = async (email: string) => {
-			setLoading(true);
-			try {
-				const result = await FetchPreferredShiftPeriod(email);
-				if (result['data'].length > 0) {
-					setShiftSubmissionRequest(result['data']);
-				} else {
-					setShiftSubmissionRequest([]);
-				}
-			} catch (error) {
-				console.error('シフト情報の取得中にエラーが発生しました:', error);
-				setShiftSubmissionRequest([]);
-			} finally {
-				setLoading(false);
-			}
-		};
-
-		fetchSubmissionInfo(session.user.email);
+		// セッションが変更されたらタイムアウトを再設定
+		clearCurrentTimeout();
+		startTimeout();
+		return () => clearCurrentTimeout();
 	}, [session]);
 
-	if (loading) {
+	if (loading && !shiftSubmissionRequest) {
 		return <Spinner size="large">Loading...</Spinner>;
 	}
 
