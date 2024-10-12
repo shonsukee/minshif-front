@@ -22,10 +22,10 @@ export default function RootLayout({
 }) {
 	return (
 		<html lang="ja">
-			<body className={inter.className}>
-				<div className="flex flex-col justify-between w-full h-full min-h-screen">
-					<Header />
-						<SessionProvider>
+			<SessionProvider>
+				<body className={inter.className}>
+					<div className="flex flex-col justify-between w-full h-full min-h-screen">
+						<Header />
 							<UserProvider>
 								<MembershipProvider>
 									<ShiftSubmissionProvider>
@@ -35,10 +35,10 @@ export default function RootLayout({
 									</ShiftSubmissionProvider>
 								</MembershipProvider>
 							</UserProvider>
-						</SessionProvider>
-					<Footer />
-				</div>
-			</body>
+						<Footer />
+					</div>
+				</body>
+			</SessionProvider>
 		</html>
 	);
 }

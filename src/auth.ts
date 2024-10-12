@@ -34,21 +34,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 		authorized: async ({request, auth}) => {
 			try {
 				const { pathname } = request.nextUrl;
-				// Authentication required except for the root and sign-in pages.
-				const publicPaths = [
-					"/",
-					"/logo.png",
-					"/logo.svg",
-					"/time_shift.png",
-					"/icons",
-					"/api/auth/signin",
-					"/redirect",
-					"/policy/terms",
-					"/policy/privacy",
+				// Authentication required for the credential pages.
+				const privatePaths = [
+					"/home",
+					"/store/create",
+					"/store/join",
 				];
-				if (publicPaths.includes(pathname)) return true;
+				if (privatePaths.includes(pathname) || pathname.startsWith("/shift/preferredShift/")) return !!auth;
 
-				return !!auth;
+				return true;
 			} catch (e) {
 				console.log(e);
 			}
