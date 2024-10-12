@@ -10,7 +10,7 @@ import { MembershipProvider } from "@/features/context/MembershipContext";
 
 export const metadata: Metadata = {
 	title: "minshif",
-	description: "minshifのホームページ",
+	description: "minshifは、シフトをオンライン上で一元管理するアプリケーションです。シフトの作成を手軽に行うことができます。また、同じ時間に入っているバイト仲間も確認することができます。Googleログインで簡単に始めることができます。",
 };
 
 const inter = Inter({subsets: ['latin']});
