@@ -8,11 +8,15 @@ import {
 } from "./ui/navigation-menu"
 import React from "react"
 import { Button } from "./ui/button"
+import { useSession } from "next-auth/react"
 
 export function MainNav() {
+	const { data: session } = useSession();
+	const link = session ? "/home" : "/";
+
 	return (
 		<div className="flex gap-4 items-center">
-			<CustomLink href="/home">
+			<CustomLink href={link}>
 				<Button variant={"ghost"} className="p-0">
 					<Image
 						src="/logo.svg"
