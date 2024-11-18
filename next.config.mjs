@@ -5,9 +5,18 @@ const nextConfig = {
 			{
 				protocol: 'https',
 				hostname: 'lh3.googleusercontent.com'
+			},
+			{
+				protocol: 'https',
+				hostname: 'scdn.line-apps.com',
+			},
+			{
+				protocol: 'https',
+				hostname: 'qr-official.line.me',
 			}
 		],
 	},
+	reactStrictMode: false,
 };
 
 

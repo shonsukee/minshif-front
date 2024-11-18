@@ -13,7 +13,7 @@
  .weekCalendarContainer {
 	width: 100%;
 	overflow-y: hidden;
-	min-width: 800px;
+	min-width: 1025px;
 	max-height: 1535px;
 }
 
@@ -114,7 +114,6 @@
 
 .shiftList > li {
 	min-height: 60px;
-	padding-top: 20px;
 }
 
 /** カレンダー要素 **/
@@ -155,12 +154,17 @@
 	position: relative;
 }
 
-.empty {
-	height: 60px;
+.cell {
+	height: 30px;
 	width: 100%;
 	display: block;
 }
-.empty:hover {
+.cell:hover {
 	cursor: pointer;
 	background: rgba(0, 162, 106, 0.04);
+}
+
+.shift:hover {
+	cursor: pointer;
+	background-color: blue;
 }
