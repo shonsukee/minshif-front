@@ -74,7 +74,6 @@ export default function SignInPage() {
 												e.preventDefault();
 												try {
 													await signIn(provider.id, { callbackUrl: "/redirect" });
-													router.push("/redirect");
 												} catch (error) {
 													if (error instanceof AuthError) {
 														console.error(error);
