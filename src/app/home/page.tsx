@@ -12,6 +12,7 @@ import { MembershipContext } from "@/features/context/MembershipContext";
 import Link from "next/link";
 import { Button, buttonVariants } from "@/features/components/ui/button";
 import { ChevronLeftIcon, ChevronRightIcon } from "@radix-ui/react-icons";
+import { LINEBotButton } from "@/features/home/sidebar/components/line/LINEBotButton";
 
 export default function Home() {
 	const membership = useContext(MembershipContext);
@@ -70,6 +71,8 @@ export default function Home() {
 					<Link href="/store/create" className={buttonVariants({ variant: "outline" })}>
 						店舗作成
 					</Link>
+
+					<LINEBotButton />
 
 					<SelectScrollable />
 					<ViewModeButton viewMode={viewMode} setViewMode={setViewMode} />
