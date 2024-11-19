@@ -12,7 +12,7 @@ export function SignIn({
 			await signIn(provider)
 		}}
 		>
-			<Button {...props}>Sign In</Button>
+			<Button {...props} className="hover:bg-slate-400 text-white rounded-md shadow-md transition-colors duration-500">Sign In</Button>
 		</form>
 	)
 }
