@@ -4,6 +4,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import LoginUser from '@/features/auth/api/LoginUser';
 import { Spinner } from '@/features/components/ui/spinner';
+import { signOut } from "next-auth/react";
 
 const RedirectPage = () => {
 	const { data: session } = useSession();
@@ -24,14 +25,17 @@ const RedirectPage = () => {
 					}
 				);
 
+				// バックエンドが動いてない場合
 				if (response.message === 'ログインに失敗しました') {
-					router.push("/");
+					await signOut();
+					return;
 				}
 				// 店舗に所属している場合
-				if (response.is_affiliated) {
+				else if (response.is_affiliated) {
 					router.push("/home");
+				}
 				// 店舗に所属していない場合
-				} else {
+				else {
 					router.push("/store/create");
 				}
 			} else {
