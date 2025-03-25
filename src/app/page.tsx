@@ -46,6 +46,7 @@ export default async function StaticPage() {
 								className="object-contain"
 								width={1000}
 								height={300}
+								priority
 							/>
 						</div>
 					</div>

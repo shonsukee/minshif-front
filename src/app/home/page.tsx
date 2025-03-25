@@ -13,6 +13,7 @@ import Link from "next/link";
 import { Button, buttonVariants } from "@/features/components/ui/button";
 import { ChevronLeftIcon, ChevronRightIcon } from "@radix-ui/react-icons";
 import { LINEBotButton } from "@/features/home/sidebar/components/line/LINEBotButton";
+import { InviteButton } from "@/features/home/sidebar/components/invitation/InviteButton";
 
 export default function Home() {
 	const membership = useContext(MembershipContext);
@@ -73,6 +74,7 @@ export default function Home() {
 					</Link>
 
 					<LINEBotButton />
+                    <InviteButton />
 
 					<SelectScrollable />
 					<ViewModeButton viewMode={viewMode} setViewMode={setViewMode} />
