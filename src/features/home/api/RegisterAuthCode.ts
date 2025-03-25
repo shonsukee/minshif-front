@@ -19,7 +19,7 @@ const RegisterAuthCode = async (authCode: number, user_id: string) => {
 
 		return { data: data["message"], error: null };
 	} catch (error) {
-		console.error("Failed to register draft shifts", error);
+		console.error("Failed to register shifts", error);
 		return {'error': error};
 	}
 }

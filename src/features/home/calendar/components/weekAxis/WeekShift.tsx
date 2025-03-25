@@ -1,28 +1,31 @@
 import { DAY_LIST } from "../constant/index";
-import { DayList, Staff, StaffList, Shift, ShiftList, setDraftShifts } from "../../types/index";
+import { DayList, Staff, StaffList, Shift, ShiftList, setShifts } from "../../types/index";
 import { useContext, useEffect, useState } from "react";
 import FetchStaffList from "@/features/home/api/FetchStaffList";
 import FetchShiftList from "@/features/home/api/FetchShiftList";
-import DraftShiftModal from "../draftShift/DraftShiftModal";
+import ShiftModal from "../shift/ShiftModal";
 import { addDays } from "date-fns";
 import { format_time } from "@/features/util/datetime";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { extractTimeforUI } from "@/features/util/datetime";
 import { MembershipContext } from "@/features/context/MembershipContext";
+import { UserContext } from "@/features/context/UserContext";
 
 export const WeekShift = ({
 	dayList,
-	draftShifts,
-	setDraftShifts
+	shifts,
+	setShifts
 }: {
 	dayList: DayList,
-	draftShifts: Shift[],
-	setDraftShifts: setDraftShifts
+	shifts: Shift[],
+	setShifts: setShifts
 }) => {
 	const { data: session } = useSession();
 	const membershipContext = useContext(MembershipContext);
 	const membership = membershipContext?.membership;
+	const userContext = useContext(UserContext);
+	const user = userContext?.user;
 	const [staffList, setStaffList] = useState<StaffList>([]);
 	const [shiftList, setShiftList] = useState<ShiftList>([]);
 	const [isOpen, setIsOpen] = useState(false);
@@ -53,12 +56,13 @@ export const WeekShift = ({
 	 */
 	useEffect(() => {
 		const fetchShift = async () => {
-			if (session) {
+			if (session && user?.id) {
 				try {
 					const start_date = addDays(new Date(dayList[0].date), -7).toISOString();
 					const end_date = addDays(new Date(dayList[6].date), 7).toISOString();
-					const response = await FetchShiftList(session?.user?.email || '', start_date, end_date);
+					const response = await FetchShiftList(user?.id, start_date, end_date);
 					setShiftList(response);
+					console.log('WeekShift', response);
 				} catch (error) {
 					console.error("Failed to fetch shift list", error);
 				}
@@ -98,7 +102,7 @@ export const WeekShift = ({
 		<div
 			key={shiftIndex}
 			onClick={membership?.privilege === "manager" ? () => handleCellClick(staff, date, unregisteredShift) : undefined}
-            // className={`cell ${membership?.membership?.privilege !== "staff" ? "pointer-events-none" : ""}`}
+			// className={`cell ${membership?.membership?.privilege !== "staff" ? "pointer-events-none" : ""}`}
 			className="cell"
 
 		/>
@@ -113,23 +117,13 @@ export const WeekShift = ({
 		<>
 			{staffList.map((staff, staffIndex) => {
 				const shifts = findShifts(shiftList[staffIndex], date, staff);
-				const draftShift = draftShifts.find((draft) => draft.date === date && draft.email === staff.email);
+				const shift = shifts.find((draft) => draft.date === date && draft.email === staff.email);
 				const registeredShift = shifts.find(shift => shift.is_registered) ?? null;
 				const unregisteredShift = shifts.find(shift => !shift.is_registered) ?? null;
 
 				return (
 					<div key={`staff-${staffIndex}`} className="staff">
-						{draftShift ? (
-							<div
-								key={`draft-${staffIndex}-${draftShift.id}`}
-								onClick={() => handleCellClick(staff, date, draftShift)}
-								className="cell w-full"
-							>
-								<div className="bg-lime-500 rounded-lg flex items-center justify-center hover:shadow-md hover:bg-lime-600">
-									{format_time(draftShift.start_time)} ~ {format_time(draftShift.end_time)}
-								</div>
-							</div>
-						) : registeredShift ? (
+						{registeredShift ? (
 							<div
 								key={`registered-${staffIndex}-${registeredShift.id}`}
 								onClick={() => handleCellClick(staff, date, registeredShift)}
@@ -137,6 +131,16 @@ export const WeekShift = ({
 							>
 								<div className="bg-amber-500 rounded-lg flex items-center justify-center hover:shadow-md hover:bg-amber-600">
 									{extractTimeforUI(registeredShift.start_time)} ~ {extractTimeforUI(registeredShift.end_time)}
+								</div>
+							</div>
+						) : shift ? (
+							<div
+								key={`draft-${staffIndex}-${shift.id}`}
+								onClick={() => handleCellClick(staff, date, shift)}
+								className="cell w-full"
+							>
+								<div className="bg-lime-500 rounded-lg flex items-center justify-center hover:shadow-md hover:bg-lime-600">
+									{format_time(shift.start_time)} ~ {format_time(shift.end_time)}
 								</div>
 							</div>
 						) : (
@@ -246,12 +250,12 @@ export const WeekShift = ({
 
 			{/* シフト登録モーダル */}
 			{isOpen && selectedStaff && (
-				<DraftShiftModal
+				<ShiftModal
 					isOpen={isOpen}
 					date={selectedDate}
 					staff={selectedStaff}
 					shift={selectedShift}
-					setDraftShifts={setDraftShifts}
+					setShifts={setShifts}
 					onClose={() => setIsOpen(false)}
 				/>
 			)}

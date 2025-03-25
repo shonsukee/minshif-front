@@ -1,25 +1,30 @@
 "use client"
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import TextBox from '@/features/store/components/TextBox'
 import SubmitButton from '@/features/store/components/SubmitButton'
 import Link from 'next/link'
 import CreateStore from '@/features/store/api/CreateStore'
 import { StoreCreateProps } from '@/features/store/types'
 import { useRouter } from 'next/navigation'
-import { useSession } from 'next-auth/react'
+import { UserContext } from '@/features/context/UserContext'
 
 export default function StoreCreate() {
-	const { data: session } = useSession();
+	const userContext = useContext(UserContext);
+	const user = userContext?.user;
 	const [storeName, setStoreName] = useState('');
 	const router = useRouter();
 
 	const handleSubmit = async (e: any) => {
 		e.preventDefault();
 
+		if (!user) {
+			return;
+		}
+
 		const response: StoreCreateProps = await CreateStore({
-			storeName: storeName,
+			id: user?.id as string,
+			name: storeName,
 			location: "日本",
-			email: session?.user?.email as string,
 		});
 
 		if (response['response']) {
