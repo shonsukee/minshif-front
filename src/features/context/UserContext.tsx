@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { createContext, useContext, useState, useEffect, ReactNode, useRef, useCallback } from 'react';
 import FetchUserInfo from '@/features/auth/api/FetchUserInfo';
 import { User, UserContextType } from '@/features/auth/types/index';
@@ -36,16 +36,14 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 		} finally {
 			setLoading(false);
 		}
-	}, [user]);
+	}, []);
 
-	// セッションの有効期限が来たらユーザ情報を再取得
 	const startTimeout = useCallback(() => {
 		if (session?.user?.email && session.expires) {
 			const expiresAt = new Date(session.expires).getTime();
 			const now = new Date().getTime();
 			const remainingTime = expiresAt - now;
 			const email = session.user.email;
-
 			if (remainingTime > 0) {
 				timeoutIdRef.current = setTimeout(() => {
 					fetchUserInfo(email);
@@ -64,19 +62,19 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 	};
 
 	useEffect(() => {
-		// 初回ロード時にユーザ情報を取得
-		if (session?.user?.email && !user) {
-			fetchUserInfo(session.user.email);
-		} else if (!session?.user?.email) {
+		const email = session?.user?.email;
+		if (!email) {
 			setUser(null);
 			setLoading(false);
 			return;
 		}
-		// セッションが変更されたらタイムアウトを再設定
+		if (user?.email !== email) {
+			fetchUserInfo(email);
+		}
 		clearCurrentTimeout();
 		startTimeout();
 		return () => clearCurrentTimeout();
-	}, [session, user, fetchUserInfo, startTimeout]);
+	}, [session, user?.email, fetchUserInfo, startTimeout]);
 
 	if (loading && !user) {
 		return <Spinner size="large">Loading...</Spinner>;

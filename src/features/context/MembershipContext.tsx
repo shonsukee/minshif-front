@@ -77,7 +77,7 @@ export const MembershipProvider = ({ children }: { children: ReactNode }) => {
 		clearCurrentTimeout();
 		startTimeout();
 		return () => clearCurrentTimeout();
-	}, [session, membership, fetchMembershipInfo, startTimeout, clearCurrentTimeout]);
+	}, [session]);
 
 	if (loading && !membership) {
 		return <Spinner size="large">Loading...</Spinner>;

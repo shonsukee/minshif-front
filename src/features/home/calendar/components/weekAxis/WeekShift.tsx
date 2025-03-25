@@ -21,7 +21,8 @@ export const WeekShift = ({
 	setDraftShifts: setDraftShifts
 }) => {
 	const { data: session } = useSession();
-	const membership = useContext(MembershipContext);
+	const membershipContext = useContext(MembershipContext);
+	const membership = membershipContext?.membership;
 	const [staffList, setStaffList] = useState<StaffList>([]);
 	const [shiftList, setShiftList] = useState<ShiftList>([]);
 	const [isOpen, setIsOpen] = useState(false);
@@ -34,9 +35,9 @@ export const WeekShift = ({
 	 */
 	useEffect(() => {
 		const fetchStaff = async () => {
-			if (session) {
+			if (session && membership?.store_id) {
 				try {
-					const response = await FetchStaffList(session.user?.email as string);
+					const response = await FetchStaffList(membership.store_id);
 					setStaffList(response);
 				} catch (error) {
 					console.error("Failed to fetch staff list", error);
@@ -45,7 +46,7 @@ export const WeekShift = ({
 		};
 
 		fetchStaff();
-	}, [session]);
+	}, [session, membership]);
 
 	/**
 	 * シフトリストの取得
@@ -96,7 +97,7 @@ export const WeekShift = ({
 	const EmptyCell = ({ shiftIndex, date, staff, unregisteredShift }: { shiftIndex: string, date: string, staff: Staff, unregisteredShift: Shift | null }) => (
 		<div
 			key={shiftIndex}
-			onClick={membership?.membership?.privilege === "manager" ? () => handleCellClick(staff, date, unregisteredShift) : undefined}
+			onClick={membership?.privilege === "manager" ? () => handleCellClick(staff, date, unregisteredShift) : undefined}
             // className={`cell ${membership?.membership?.privilege !== "staff" ? "pointer-events-none" : ""}`}
 			className="cell"
 
@@ -141,7 +142,7 @@ export const WeekShift = ({
 						) : (
 							<EmptyCell shiftIndex={`empty-registered-${staffIndex}`} date={date} staff={staff} unregisteredShift={unregisteredShift} />
 						)}
-						{membership && membership.membership?.privilege === "staff" ? (
+						{membership && membership?.privilege === "staff" ? (
 							<EmptyCell shiftIndex={`empty-registered-${staffIndex}`} date={date} staff={staff} unregisteredShift={null} />
 						) : (
 							unregisteredShift ? (
