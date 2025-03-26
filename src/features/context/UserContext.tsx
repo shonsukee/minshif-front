@@ -1,5 +1,5 @@
-"use client"
-import React, { createContext, useContext, useState, useEffect, ReactNode, useRef } from 'react';
+"use client";
+import React, { createContext, useContext, useState, useEffect, ReactNode, useRef, useCallback } from 'react';
 import FetchUserInfo from '@/features/auth/api/FetchUserInfo';
 import { User, UserContextType } from '@/features/auth/types/index';
 import { useSession } from 'next-auth/react';
@@ -13,21 +13,21 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 	const { data: session } = useSession();
 	const timeoutIdRef = useRef<NodeJS.Timeout | null>(null);
 
-	const fetchUserInfo = async (email: string) => {
+	const fetchUserInfo = useCallback(async (email: string) => {
 		if (!user) {
 			setLoading(true);
 		}
 		try {
 			const response = await FetchUserInfo(email) ?? null;
 
-			if (response === null || response['error'] || response['user'] === null) {
+			if (response === null || response['error']) {
 				setUser(null);
 			} else {
 				setUser({
-					id: response['user']['id'],
-					user_name: response['user']['user_name'],
-					email: response['user']['email'],
-					picture: response['user']['picture'],
+					id: response['id'],
+					user_name: response['user_name'],
+					email: response['email'],
+					picture: response['picture'],
 				});
 			}
 		} catch (error) {
@@ -36,16 +36,14 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 		} finally {
 			setLoading(false);
 		}
-	};
+	}, []);
 
-	// セッションの有効期限が来たらユーザ情報を再取得
-	const startTimeout = () => {
+	const startTimeout = useCallback(() => {
 		if (session?.user?.email && session.expires) {
 			const expiresAt = new Date(session.expires).getTime();
 			const now = new Date().getTime();
 			const remainingTime = expiresAt - now;
 			const email = session.user.email;
-
 			if (remainingTime > 0) {
 				timeoutIdRef.current = setTimeout(() => {
 					fetchUserInfo(email);
@@ -54,9 +52,8 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 				fetchUserInfo(email);
 			}
 		}
-	};
+	}, [session, fetchUserInfo]);
 
-	// タイムアウトをクリア
 	const clearCurrentTimeout = () => {
 		if (timeoutIdRef.current) {
 			clearTimeout(timeoutIdRef.current);
@@ -65,27 +62,26 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 	};
 
 	useEffect(() => {
-		// 初回ロード時にユーザ情報を取得
-		if (session?.user?.email && !user) {
-			setLoading(true);
-			fetchUserInfo(session.user.email);
-		} else if (!session?.user?.email) {
+		const email = session?.user?.email;
+		if (!email) {
 			setUser(null);
 			setLoading(false);
-			return
+			return;
 		}
-		// セッションが変更されたらタイムアウトを再設定
+		if (user?.email !== email) {
+			fetchUserInfo(email);
+		}
 		clearCurrentTimeout();
 		startTimeout();
 		return () => clearCurrentTimeout();
-	}, [session]);
+	}, [session, user?.email, fetchUserInfo, startTimeout]);
 
 	if (loading && !user) {
 		return <Spinner size="large">Loading...</Spinner>;
 	}
 
 	return (
-		<UserContext.Provider value={{user}}>
+		<UserContext.Provider value={{ user }}>
 			{children}
 		</UserContext.Provider>
 	);

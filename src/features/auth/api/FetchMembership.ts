@@ -2,7 +2,7 @@ import { MembershipContextType } from "../types";
 
 const FetchMembership = async (email: string): Promise<MembershipContextType> => {
 	try{
-		const response = await fetch(process.env.NEXT_PUBLIC_API_URL + `/user/fetch_membership?email=${email}`, {
+		const response = await fetch(process.env.NEXT_PUBLIC_API_URL + `/users/memberships?email=${encodeURIComponent(email)}`, {
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json',

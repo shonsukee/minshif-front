@@ -1,5 +1,5 @@
 "use client"
-import React, { createContext, useContext, useState, useEffect, ReactNode, useRef } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode, useRef, useCallback } from 'react';
 import FetchMembership from '@/features/auth/api/FetchMembership';
 import { Membership, MembershipContextType } from '@/features/auth/types/index';
 import { useSession } from 'next-auth/react';
@@ -13,7 +13,7 @@ export const MembershipProvider = ({ children }: { children: ReactNode }) => {
 	const { data: session } = useSession();
 	const timeoutIdRef = useRef<NodeJS.Timeout | null>(null);
 
-	const fetchMembershipInfo = async (email: string) => {
+	const fetchMembershipInfo = useCallback(async (email: string) => {
 		setLoading(true);
 		try {
 			const response = await FetchMembership(email) ?? null;
@@ -36,10 +36,10 @@ export const MembershipProvider = ({ children }: { children: ReactNode }) => {
 		} finally {
 			setLoading(false);
 		}
-	};
+	}, []);
 
 	// セッションの有効期限が来たらユーザ情報を再取得
-	const startTimeout = () => {
+	const startTimeout = useCallback(() => {
 		if (session?.user?.email && session.expires) {
 			const expiresAt = new Date(session.expires).getTime();
 			const now = new Date().getTime();
@@ -54,24 +54,23 @@ export const MembershipProvider = ({ children }: { children: ReactNode }) => {
 				fetchMembershipInfo(email);
 			}
 		}
-	};
+	}, [session, fetchMembershipInfo]);
 
 	// タイムアウトをクリア
-	const clearCurrentTimeout = () => {
+	const clearCurrentTimeout = useCallback(() => {
 		if (timeoutIdRef.current) {
 			clearTimeout(timeoutIdRef.current);
 			timeoutIdRef.current = null;
 		}
-	};
+	}, []);
 
 	useEffect(() => {
 		if (session?.user?.email && !membership) {
-			setLoading(true);
 			fetchMembershipInfo(session.user.email);
 		} else if (!session?.user?.email) {
 			setMembership(null);
 			setLoading(false);
-			return
+			return;
 		}
 
 		// セッションが変更されたらタイムアウトを再設定
@@ -85,7 +84,7 @@ export const MembershipProvider = ({ children }: { children: ReactNode }) => {
 	}
 
 	return (
-		<MembershipContext.Provider value={{membership}}>
+		<MembershipContext.Provider value={{ membership }}>
 			{children}
 		</MembershipContext.Provider>
 	);
