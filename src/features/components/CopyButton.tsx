@@ -40,7 +40,7 @@ const CopyButton = ({ textToCopy }: { textToCopy: string}) => {
 			</button>
 			{showMessage && (
 				<div
-					className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-700 text-white text-sm rounded opacity-100 transition-opacity duration-300 min-w-4"
+					className="absolute bottom-full left-1/2 transform -translate-x-1/2 px-2 py-1 bg-gray-700 text-white text-xs rounded opacity-100 transition-opacity duration-300 min-w-4 w-max"
 				>
 					コピーしました！
 				</div>
