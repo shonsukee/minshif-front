@@ -16,13 +16,15 @@ import { UserContext } from '@/features/context/UserContext';
 import FetchAuthCode from '@/features/home/api/FetchAuthCode';
 
 export const LINEBotButton = () => {
-	const user = useContext(UserContext);
+	const userContext = useContext(UserContext);
+	const user = userContext?.user;
+
 	const [authCode, setAuthCode]= useState<number>(Number(localStorage.getItem('authCode')));
 
 	const handleSetAuthCode = async () => {
 		const authCode = localStorage.getItem('authCode');
 		const authCodeExpiration = localStorage.getItem('authCodeExpiration');
-		const response = await FetchAuthCode(user?.user?.id || '');
+		const response = await FetchAuthCode(user?.id || '');
 
 		// 認証コードが保存されている場合
 		if (response !== null) {
@@ -41,7 +43,7 @@ export const LINEBotButton = () => {
 			localStorage.setItem('authCodeExpiration', String(newExpiration));
 
 			// 認証コードを保存
-			const user_id = user?.user?.id || '';
+			const user_id = user?.id || '';
 			const data = await RegisterAuthCode(code, user_id);
 
 			// 保存失敗時
@@ -95,7 +97,12 @@ export const LINEBotButton = () => {
 							<div className='mt-2'>
 								<Label htmlFor='phone' className='text-sm'>スマホの方はこちら</Label>
 								<a href="https://lin.ee/lIZtWOv" className='flex h-12 justify-center' id="phone" target="_blank">
-									<img src="https://scdn.line-apps.com/n/line_add_friends/btn/ja.png" alt="友だち追加" height="12"/>
+									<Image
+										src="https://scdn.line-apps.com/n/line_add_friends/btn/ja.png"
+										alt="友だち追加"
+										height={12}
+										width={170}
+									/>
 								</a>
 							</div>
 						</div>

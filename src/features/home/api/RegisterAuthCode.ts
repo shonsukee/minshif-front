@@ -1,6 +1,6 @@
 const RegisterAuthCode = async (authCode: number, user_id: string) => {
 	try {
-		const response = await fetch(process.env.NEXT_PUBLIC_API_URL + '/auth_code', {
+		const response = await fetch(process.env.NEXT_PUBLIC_API_URL + '/bots/code', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',

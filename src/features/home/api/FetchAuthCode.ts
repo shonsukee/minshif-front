@@ -8,7 +8,7 @@ interface FetchAuthCodeProps {
 
 const FetchAuthCode = async ( user_id: string ): Promise<FetchAuthCodeProps | null> => {
 	try{
-		const response = await fetch(process.env.NEXT_PUBLIC_API_URL + `/auth_code?user_id=${user_id}`, {
+		const response = await fetch(process.env.NEXT_PUBLIC_API_URL + `/bots/code?user_id=${user_id}`, {
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json',
@@ -20,7 +20,7 @@ const FetchAuthCode = async ( user_id: string ): Promise<FetchAuthCodeProps | nu
 		}
 		const data = await response.json();
 
-		return data["message"];
+		return data;
 	} catch(error) {
 		console.error(error);
 		return null;
