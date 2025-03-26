@@ -1,13 +1,13 @@
-const CreateStore = async ({ storeName, location, email }: { storeName: string, location: string, email?: string }) => {
+const CreateStore = async ({ name, location, id }: { name: string, location: string, id: string }) => {
 	let response: any;
-	await fetch(process.env.NEXT_PUBLIC_API_URL + '/store/create', {
+	await fetch(process.env.NEXT_PUBLIC_API_URL + '/stores', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
 		},
 		body: JSON.stringify({
-			email: email,
-			store_name: storeName,
+			created_by_user_id: id,
+			store_name: name,
 			location: location,
 		}),
 	})

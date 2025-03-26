@@ -1,6 +1,6 @@
 const SubmitShiftRequest = async (shiftRequest: object, email: string | null | undefined) => {
 	let res;
-	await fetch(process.env.NEXT_PUBLIC_API_URL + '/shift/submitShiftRequest', {
+	await fetch(process.env.NEXT_PUBLIC_API_URL + '/shift-submission-requests', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',

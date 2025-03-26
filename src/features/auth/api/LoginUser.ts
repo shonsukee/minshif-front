@@ -2,7 +2,7 @@ import { User } from '@/features/auth/types';
 
 const LoginUser = async (code: string, invitation_id: string | null, user: User): Promise<{message: string, is_affiliated: boolean}> => {
 	try{
-		const response = await fetch(process.env.NEXT_PUBLIC_API_URL + '/user/create', {
+		const response = await fetch(process.env.NEXT_PUBLIC_API_URL + '/users', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',

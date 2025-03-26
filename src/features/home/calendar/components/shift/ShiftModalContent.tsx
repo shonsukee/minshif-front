@@ -1,5 +1,5 @@
 import React, { useContext, useRef } from "react";
-import { Staff, Shift, setDraftShifts } from "../../types";
+import { Staff, Shift, setShifts } from "../../types";
 import { formatTimeToISO, format_jp_date, format_time, isStartTimeBeforeEndTime } from "@/features/util/datetime";
 import { Button } from "@/features/components/ui/button"
 import {
@@ -14,17 +14,17 @@ import { Input } from "@/features/components/ui/input"
 import { Label } from "@/features/components/ui/label"
 import { MembershipContext } from "@/features/context/MembershipContext";
 
-export const DraftShiftModalContent = ({
+export const ShiftModalContent = ({
 	date,
 	staff,
 	shift,
-	setDraftShifts,
+	setShifts,
 	onClose
 }: {
 	date: string,
 	staff: Staff,
 	shift: Shift | null,
-	setDraftShifts: setDraftShifts,
+	setShifts: setShifts,
 	onClose: () => void
 }) => {
 	const membership = useContext(MembershipContext);
@@ -36,7 +36,7 @@ export const DraftShiftModalContent = ({
 	const _end_time = shift ? format_time(shift.end_time) : "00:00";
 	const _notes = shift ? shift.notes : "";
 
-	const handleDraftRegister = () => {
+	const handleShiftsRegister = () => {
 		const start_time = startTimeRef.current ? startTimeRef.current.value : "";
 		const end_time = endTimeRef.current ? endTimeRef.current.value : "";
 		const notes = notesRef.current ? notesRef.current.value : "";
@@ -46,9 +46,9 @@ export const DraftShiftModalContent = ({
 			return;
 		}
 
-		setDraftShifts((prev) => {
-			const newDraftShifts = prev.filter((draft) => new Date(draft.date).getTime() !== new Date(date).getTime());
-			newDraftShifts.push({
+		setShifts((prev) => {
+			const newShifts = prev.filter((shifts) => new Date(shifts.date).getTime() !== new Date(date).getTime());
+			newShifts.push({
 				id: shift ? shift.id : null,
 				email: staff.email,
 				date: date,
@@ -58,7 +58,7 @@ export const DraftShiftModalContent = ({
 				is_registered: true,
 				shift_submission_request_id: shift && shift != undefined ? shift.shift_submission_request_id : null
 			});
-			return newDraftShifts;
+			return newShifts;
 		});
 
 		onClose();
@@ -131,7 +131,7 @@ export const DraftShiftModalContent = ({
 					<Button variant="outline" onClick={onClose}>閉じる</Button>
 					{
 						membership && membership.membership?.privilege === "manager" &&
-						<Button variant="orange" onClick={handleDraftRegister}>仮登録</Button>
+						<Button variant="orange" onClick={handleShiftsRegister}>仮登録</Button>
 					}
 				</DialogFooter>
 			</DialogContent>
