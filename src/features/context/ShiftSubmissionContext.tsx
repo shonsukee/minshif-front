@@ -73,9 +73,7 @@ export const ShiftSubmissionProvider = ({ children }: { children: ReactNode }) =
 		return () => clearCurrentTimeout();
 	}, [session]);
 
-	if (loading && !shiftSubmissionRequest) {
-		return <Spinner size="large">Loading...</Spinner>;
-	}
+	if (loading && !shiftSubmissionRequest) return <Spinner size="large">Loading...</Spinner>;
 
 	return (
 		<ShiftSubmissionContext.Provider value={{ shiftSubmissionRequest, setShiftSubmissionRequest }}>

@@ -1,9 +1,9 @@
 import { StaffList } from "@/features/home/calendar/types";
 
 
-const FetchStaffList = async ( email: string ): Promise<StaffList> => {
+const FetchStaffList = async ( store_id: string ): Promise<StaffList> => {
 	try{
-		const response = await fetch(process.env.NEXT_PUBLIC_API_URL + `/store/staff_list?email=${email}`, {
+		const response = await fetch(process.env.NEXT_PUBLIC_API_URL + `/stores/${store_id}/users`, {
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json',
@@ -16,7 +16,7 @@ const FetchStaffList = async ( email: string ): Promise<StaffList> => {
 
 		const data = await response.json();
 
-		return data['staff_list'];
+		return data;
 	} catch(error) {
 		console.error(error);
 		return [];
