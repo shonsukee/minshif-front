@@ -21,9 +21,9 @@ export default function RootLayout({
 	children: React.ReactNode;
 }) {
 	return (
-		<html lang="ja">
+		<html lang="ja" className="h-full">
 			<SessionProvider>
-				<body className={inter.className}>
+                <body className={`${inter.className} h-full`}>
 					<div className="flex flex-col justify-between w-full h-full min-h-screen">
 						<Header />
 							<UserProvider>

@@ -76,9 +76,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 		return () => clearCurrentTimeout();
 	}, [session, user?.email, fetchUserInfo, startTimeout]);
 
-	if (loading && !user) {
-		return <Spinner size="large">Loading...</Spinner>;
-	}
+	if (loading && !user) return <Spinner size="large">Loading...</Spinner>;
 
 	return (
 		<UserContext.Provider value={{ user }}>

@@ -7,11 +7,15 @@ import { Spinner } from '@/features/components/ui/spinner';
 import { signOut } from "next-auth/react";
 
 const RedirectPage = () => {
-	const { data: session } = useSession();
+	const { data: session, status } = useSession();
 	const router = useRouter();
-	const invitation_id = sessionStorage.getItem('invitation_id') || '';
+	const invitation_id = typeof window !== 'undefined'
+		? sessionStorage.getItem('invitation_id') || ''
+		: '';
 
 	useEffect(() => {
+        if (status !== 'authenticated') return;
+
 		const sendSessionData = async () => {
 			if (session?.user) {
 				const response = await LoginUser(
@@ -39,17 +43,13 @@ const RedirectPage = () => {
 					router.push("/store/create");
 				}
 			} else {
-				router.push("/");
-			}
+                router.push("/");
+            }
 		};
 		sendSessionData();
-	}, [session, invitation_id, router]);
+	}, [status, session, invitation_id, router]);
 
-	return (
-		<div className="flex justify-center items-center h-60v">
-			<Spinner size="large">Loading...</Spinner>
-		</div>
-	);
+    if (status === 'loading') return <Spinner size="large">Loading...</Spinner>;
 };
 
 export default RedirectPage;

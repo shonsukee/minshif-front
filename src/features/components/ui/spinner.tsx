@@ -37,9 +37,11 @@ interface SpinnerContentProps
 
 export function Spinner({ size, show, children, className }: SpinnerContentProps) {
 	return (
-		<span className={spinnerVariants({ show })}>
-			<Loader2 className={cn(loaderVariants({ size }), className)} />
-			{children}
-		</span>
+        <div className="flex items-center justify-center h-full">
+            <span className={spinnerVariants({ show })}>
+                <Loader2 className={cn(loaderVariants({ size }), className)} />
+                {children}
+            </span>
+        </div>
 	);
 }

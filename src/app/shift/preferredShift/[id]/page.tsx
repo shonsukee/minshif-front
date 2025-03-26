@@ -31,11 +31,7 @@ export default function SubmitPreferredShift({ params }: { params: any }) {
 	}, []);
 
 	if (shiftSubmissionRequest.length === 0) {
-		return (
-			<div className="flex justify-center items-center h-60v">
-				<Spinner size="large">Loading...</Spinner>
-			</div>
-		);
+		return <Spinner size="large">Loading...</Spinner>;
 	}
 
 	// 希望シフトが存在する場合にのみ日付を更新
