@@ -62,7 +62,6 @@ export const WeekShift = ({
 					const end_date = addDays(new Date(dayList[6].date), 7).toISOString();
 					const response = await FetchShiftList(user?.id, start_date, end_date);
 					setShiftList(response);
-					console.log('WeekShift', response);
 				} catch (error) {
 					console.error("Failed to fetch shift list", error);
 				}
