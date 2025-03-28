@@ -1,5 +1,5 @@
 "use client"
-import { Plus, Calendar, ChevronDown, Home, Inbox, UserPlus, BotMessageSquare } from "lucide-react"
+import { Plus, Calendar, ChevronDown, Home, BotMessageSquare } from "lucide-react"
 import Image from "next/image"
 import {
   Sidebar,
@@ -16,8 +16,9 @@ import {
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/features/components/ui/dropdown-menu"
 import { useSession } from "next-auth/react"
 import { useContext, useState } from "react"
-import { SubmitShiftModal } from "@/features/home/sidebar/components/SubmitShiftModal"
 import { MembershipContext } from "@/features/context/MembershipContext"
+import { InviteMembersMenuItem } from "./InviteMembersMenuItem"
+import { SubmissionRequestMenuItem } from "./SubmissionRequestMenuItem"
 
 const page_items = [
   {
@@ -29,11 +30,6 @@ const page_items = [
 
 const external_items = [
   {
-    title: "Invite Members",
-    url: "#",
-    icon: UserPlus,
-  },
-  {
     title: "Add LINE Bot",
     url: "#",
     icon: BotMessageSquare,
@@ -41,7 +37,7 @@ const external_items = [
 ]
 
 export function AppSidebar() {
-	const membership = useContext(MembershipContext);
+  const membership = useContext(MembershipContext)?.membership;
   const [isSubmitShiftModalOpen, setSubmitShiftModalOpen] = useState(false);
   const shift_submission_request_number = 2;
   const { status } = useSession();
@@ -108,20 +104,7 @@ export function AppSidebar() {
           <SidebarGroupLabel>Shifts</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {/* シフト提出依頼 - without staff */}
-              {(
-                membership?.membership?.privilege === "manager" ||
-                membership?.membership?.privilege === "developer"
-              ) && (
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild onClick={() => setSubmitShiftModalOpen(true)}>
-                    <a href="#">
-                      <Inbox />
-                      <span>Submission Request</span>
-                    </a>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              )}
+				{SubmissionRequestMenuItem(membership)}
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
                   <a href={"#"}>
@@ -139,6 +122,7 @@ export function AppSidebar() {
           <SidebarGroupLabel>External</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
+              {InviteMembersMenuItem(membership)}
               {external_items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
@@ -162,7 +146,6 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <SubmitShiftModal open={isSubmitShiftModalOpen} onOpenChange={setSubmitShiftModalOpen} />
       </SidebarContent>
     </Sidebar>
   )

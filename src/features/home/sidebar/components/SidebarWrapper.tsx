@@ -1,7 +1,7 @@
 "use client"
 
 import { useSession } from "next-auth/react"
-import { AppSidebar } from "@/features/home/sidebar/components/AppSidebar"
+import { AppSidebar } from "@/features/home/sidebar/components/bar/AppSidebar"
 import { SidebarTrigger } from "@/features/components/ui/sidebar";
 
 export function AppSidebarWrapper() {
