@@ -9,7 +9,6 @@ import { Shift } from "@/features/home/calendar/types";
 import { SelectScrollable } from "@/features/home/sidebar/components/ShiftSubmissionList";
 import { Button } from "@/features/components/ui/button";
 import { ChevronLeftIcon, ChevronRightIcon } from "@radix-ui/react-icons";
-import { LINEBotButton } from "@/features/home/sidebar/components/line/LINEBotButton";
 
 export default function Home() {
 	const [date, setDate] = useState(new Date());
@@ -55,8 +54,6 @@ export default function Home() {
 	return (
 		<div className="calendar-root flex-1 py-6">
 			<div className="flex justify-end">
-				<LINEBotButton />
-
 				<SelectScrollable />
 				<ViewModeButton viewMode={viewMode} setViewMode={setViewMode} />
 				<Button variant="outline" size="icon" onClick={handleDecrement}>

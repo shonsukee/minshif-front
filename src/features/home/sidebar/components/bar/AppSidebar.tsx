@@ -1,6 +1,5 @@
 "use client"
-import { Plus, Calendar, ChevronDown, Home, BotMessageSquare } from "lucide-react"
-import Image from "next/image"
+import { Plus, Calendar, ChevronDown, Home } from "lucide-react"
 import {
   Sidebar,
   SidebarContent,
@@ -15,10 +14,11 @@ import {
 } from "@/features/components/ui/sidebar"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/features/components/ui/dropdown-menu"
 import { useSession } from "next-auth/react"
-import { useContext, useState } from "react"
+import { useContext } from "react"
 import { MembershipContext } from "@/features/context/MembershipContext"
 import { InviteMembersMenuItem } from "./InviteMembersMenuItem"
 import { SubmissionRequestMenuItem } from "./SubmissionRequestMenuItem"
+import { AddLINEBotMenuItem } from "./AddLINEBotMenuItem"
 
 const page_items = [
   {
@@ -28,17 +28,8 @@ const page_items = [
   },
 ]
 
-const external_items = [
-  {
-    title: "Add LINE Bot",
-    url: "#",
-    icon: BotMessageSquare,
-  },
-]
-
 export function AppSidebar() {
   const membership = useContext(MembershipContext)?.membership;
-  const [isSubmitShiftModalOpen, setSubmitShiftModalOpen] = useState(false);
   const shift_submission_request_number = 2;
   const { status } = useSession();
 
@@ -123,25 +114,7 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {InviteMembersMenuItem(membership)}
-              {external_items.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <a href={item.url}>
-                    {typeof item.icon === "string" ? (
-                        <Image
-                            src={item.icon}
-                            alt={item.title}
-                            width={20}
-                            height={20}
-                        />
-                        ) : (
-                        <item.icon />
-                    )}
-                      <span>{item.title}</span>
-                    </a>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+			  {AddLINEBotMenuItem()}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
