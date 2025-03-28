@@ -60,7 +60,7 @@ export default function Home() {
 	return (
 		<div>
 			<div className="calendar-root">
-				<div className="flex">
+				<div className="flex justify-end">
 					{/* シフト提出依頼 - without staff */}
 					{(
 						membership?.membership?.privilege === "manager" ||
