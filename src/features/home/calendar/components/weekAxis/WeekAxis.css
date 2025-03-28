@@ -1,16 +1,4 @@
-/**
- * 全体
- */
- .calendar-root {
-	position: relative;
-	width: 100%;
-	height: 100%;
-	display: flex;
-	flex-direction: column;
-	overflow: hidden;
-}
-
- .weekCalendarContainer {
+.weekCalendarContainer {
 	width: 100%;
 	overflow-y: hidden;
 	min-width: 1025px;

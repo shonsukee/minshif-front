@@ -15,6 +15,9 @@ import {
 } from "@/features/components/ui/sidebar"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/features/components/ui/dropdown-menu"
 import { useSession } from "next-auth/react"
+import { useContext, useState } from "react"
+import { SubmitShiftModal } from "@/features/home/sidebar/components/SubmitShiftModal"
+import { MembershipContext } from "@/features/context/MembershipContext"
 
 const page_items = [
   {
@@ -38,8 +41,10 @@ const external_items = [
 ]
 
 export function AppSidebar() {
+	const membership = useContext(MembershipContext);
+  const [isSubmitShiftModalOpen, setSubmitShiftModalOpen] = useState(false);
   const shift_submission_request_number = 2;
-  const { data: _, status } = useSession();
+  const { status } = useSession();
 
   if (status === 'loading') {
     return (
@@ -103,15 +108,20 @@ export function AppSidebar() {
           <SidebarGroupLabel>Shifts</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <a href="#">
-                    <Inbox />
-                    <span>Submission Request</span>
-                  </a>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-
+              {/* シフト提出依頼 - without staff */}
+              {(
+                membership?.membership?.privilege === "manager" ||
+                membership?.membership?.privilege === "developer"
+              ) && (
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild onClick={() => setSubmitShiftModalOpen(true)}>
+                    <a href="#">
+                      <Inbox />
+                      <span>Submission Request</span>
+                    </a>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              )}
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
                   <a href={"#"}>
@@ -152,6 +162,7 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
+        <SubmitShiftModal open={isSubmitShiftModalOpen} onOpenChange={setSubmitShiftModalOpen} />
       </SidebarContent>
     </Sidebar>
   )

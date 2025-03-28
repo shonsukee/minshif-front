@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import {
 	Dialog,
-	DialogTrigger,
 	DialogContent,
 	DialogHeader,
 	DialogTitle,
@@ -16,7 +15,7 @@ import { extractTime, formatDateToISO } from "@/features/util/datetime";
 import SubmitShiftRequest from "../api/SubmitShiftRequest";
 import { useSession } from 'next-auth/react';
 
-export const SubmitShiftModal = () => {
+export const SubmitShiftModal = ({ open, onOpenChange }: { open: boolean, onOpenChange: (open: boolean) => void }) => {
 	const { data: session } = useSession();
 	const [deadline, setDeadline] = useState<Date | undefined>(undefined);
 	const [startDate, setStartDate] = useState<Date | undefined>(undefined);
@@ -54,15 +53,13 @@ export const SubmitShiftModal = () => {
 			alert("シフト提出依頼に失敗しました。");
 		} else {
 			alert(response['msg']);
+			onOpenChange(false);
 		}
 	};
 
 	return (
-		<Dialog>
-			<DialogTrigger asChild>
-				<Button variant="outline">シフト提出依頼</Button>
-			</DialogTrigger>
-			<DialogContent className="sm:max-w-[500px]" onOpenAutoFocus={(e) => {e.preventDefault()}} >
+		<Dialog open={open} onOpenChange={onOpenChange}>
+			<DialogContent className="sm:max-w-[500px]" onOpenAutoFocus={(e) => e.preventDefault()}>
 				<DialogHeader>
 					<DialogTitle>シフト提出依頼</DialogTitle>
 					<DialogDescription>
@@ -72,33 +69,23 @@ export const SubmitShiftModal = () => {
 				<form onSubmit={handleSubmitShiftInfo}>
 					<div className="grid gap-4 py-4">
 						<div className="grid grid-cols-3 items-center gap-4">
-							<Label htmlFor="name" className="text-right">
-								対象スタッフ
-							</Label>
-							<div className="col-span-2">
-								全てのスタッフ
-							</div>
+							<Label htmlFor="name" className="text-right">対象スタッフ</Label>
+							<div className="col-span-2">全てのスタッフ</div>
 						</div>
 						<div className="grid grid-cols-3 items-center gap-4">
-							<Label htmlFor="shift_submission_period" className="text-right">
-								シフト提出期間
-							</Label>
+							<Label htmlFor="shift_submission_period" className="text-right">シフト提出期間</Label>
 							<DateTimePicker hourCycle={12} granularity="day" placeholder="開始日付を選択" value={startDate} onChange={setStartDate} />
 						</div>
 						<div className="grid grid-cols-3 items-center gap-4">
-							<Label htmlFor="shift_submission_period" className="text-right"/>
+							<Label className="text-right" />
 							<DateTimePicker hourCycle={12} granularity="day" placeholder="終了日付を選択" value={endDate} onChange={setEndDate} />
 						</div>
 						<div className="grid grid-cols-3 items-center gap-4">
-							<Label htmlFor="deadline" className="text-right">
-								締切
-							</Label>
+							<Label htmlFor="deadline" className="text-right">締切</Label>
 							<DateTimePicker placeholder="日付を選択" value={deadline} onChange={setDeadline} />
 						</div>
 						<div className="grid grid-cols-3 items-center gap-4">
-							<Label htmlFor="notes" className="text-right">
-								備考
-							</Label>
+							<Label htmlFor="notes" className="text-right">備考</Label>
 							<Input name="notes" id="notes" placeholder={"推奨"} className="col-span-2" />
 						</div>
 					</div>
