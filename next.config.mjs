@@ -25,7 +25,7 @@ export const nextConfig = {
 };
 
 // Make sure adding Sentry options is the last code to run before exporting
-export default withSentryConfig(withSentryConfig(nextConfig), {
+export default withSentryConfig(nextConfig, {
 	org: "shonsukee",
 	project: "minshif",
 
