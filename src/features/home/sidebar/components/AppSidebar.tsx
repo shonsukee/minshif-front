@@ -77,9 +77,9 @@ export function AppSidebar() {
                 <span>Acme Corp.</span>
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <a href={"#"}>
-                    <Plus />
+                <a href={"/store/create"} className="flex w-full items-center justify-between gap-2">
                     <span>Create new store</span>
+                    <Plus />
                 </a>
               </DropdownMenuItem>
             </DropdownMenuContent>

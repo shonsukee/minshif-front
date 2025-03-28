@@ -57,10 +57,6 @@ export default function Home() {
 	return (
 		<div className="calendar-root flex-1 py-6">
 			<div className="flex justify-end">
-				<Link href="/store/create" className={buttonVariants({ variant: "outline" })}>
-					店舗作成
-				</Link>
-
 				<LINEBotButton />
 				<InviteButton />
 
