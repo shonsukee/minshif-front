@@ -1,5 +1,6 @@
 "use client"
-import { Plus, Calendar, ChevronDown, Home } from "lucide-react"
+
+import { Plus, ChevronDown, Home } from "lucide-react"
 import {
   Sidebar,
   SidebarContent,
@@ -7,7 +8,6 @@ import {
   SidebarGroupContent,
   SidebarGroupLabel,
   SidebarMenu,
-  SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarMenuSkeleton,
@@ -19,6 +19,7 @@ import { MembershipContext } from "@/features/context/MembershipContext"
 import { InviteMembersMenuItem } from "./InviteMembersMenuItem"
 import { SubmissionRequestMenuItem } from "./SubmissionRequestMenuItem"
 import { AddLINEBotMenuItem } from "./AddLINEBotMenuItem"
+import { SubmissionMenuItem } from "./SubmissionMenuItem"
 
 const page_items = [
   {
@@ -30,7 +31,6 @@ const page_items = [
 
 export function AppSidebar() {
   const membership = useContext(MembershipContext)?.membership;
-  const shift_submission_request_number = 2;
   const { status } = useSession();
 
   if (status === 'loading') {
@@ -95,16 +95,8 @@ export function AppSidebar() {
           <SidebarGroupLabel>Shifts</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-				{SubmissionRequestMenuItem(membership)}
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <a href={"#"}>
-                    <Calendar />
-                    <span>Submission</span>
-                  </a>
-                </SidebarMenuButton>
-                <SidebarMenuBadge>{shift_submission_request_number}</SidebarMenuBadge>
-              </SidebarMenuItem>
+              {SubmissionRequestMenuItem(membership)}
+              {SubmissionMenuItem()}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
@@ -114,7 +106,7 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {InviteMembersMenuItem(membership)}
-			  {AddLINEBotMenuItem()}
+              {AddLINEBotMenuItem()}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

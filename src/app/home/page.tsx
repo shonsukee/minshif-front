@@ -6,7 +6,6 @@ import { ViewModeButton } from "@/features/home/calendar/components/ViewModeButt
 import { format, addWeeks, subWeeks, startOfWeek, endOfWeek } from "date-fns";
 import "@/features/home/Home.css";
 import { Shift } from "@/features/home/calendar/types";
-import { SelectScrollable } from "@/features/home/sidebar/components/ShiftSubmissionList";
 import { Button } from "@/features/components/ui/button";
 import { ChevronLeftIcon, ChevronRightIcon } from "@radix-ui/react-icons";
 
@@ -54,7 +53,6 @@ export default function Home() {
 	return (
 		<div className="calendar-root flex-1 py-6">
 			<div className="flex justify-end">
-				<SelectScrollable />
 				<ViewModeButton viewMode={viewMode} setViewMode={setViewMode} />
 				<Button variant="outline" size="icon" onClick={handleDecrement}>
 					<ChevronLeftIcon className="h-4 w-4" />

@@ -15,5 +15,5 @@ export function AppSidebarWrapper() {
 export function SidebarTriggerWrapper() {
 	const { status } = useSession()
 	if (status !== "authenticated") return null
-	return <SidebarTrigger className="fixed top-[80px] left-2 z-50 hidden md:inline-flex" />
+	return <SidebarTrigger className="fixed top-[80px] left-2 z-50 md:inline-flex" />
 }
