@@ -2,7 +2,7 @@ import CustomLink from "@/features/components/custom-link"
 
 export default function Footer() {
 	return (
-		<footer className="flex flex-col gap-4 px-4 my-4 mx-0 w-full text-sm sm:flex-row sm:justify-between sm:items-center sm:px-6 sm:my-12 sm:mx-auto sm:max-w-7xl sm:h-5">
+		<footer className="flex flex-1 items-end gap-4 px-4 my-4 mx-0 w-full text-sm sm:flex-row sm:justify-between sm:px-6 sm:my-12 sm:mx-auto sm:max-w-7xl sm:h-5">
 			<div className="flex flex-col gap-4 sm:flex-row">
 				<CustomLink href="https://github.com/shonsukee/minshif-front">
 					Front source on GitHub
@@ -17,8 +17,8 @@ export default function Footer() {
 					プライバシーポリシー
 				</CustomLink>
 			</div>
-			<div className="flex gap-2 justify-start items-center">
-				<span className="text-slate-400 text-sm">© 2024 minshif</span>
+			<div className="flex gap-2 justify-start">
+				<span className="text-slate-400 text-sm">© 2025 minshif</span>
 			</div>
 		</footer>
 	)

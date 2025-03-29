@@ -14,7 +14,7 @@ import { Input } from "@/features/components/ui/input";
 import InviteUser from "../../api/InviteUser";
 import { UserContext } from "@/features/context/UserContext";
 
-export const InviteButton = () => {
+export const InviteButton = ({ open, onOpenChange }: { open: boolean, onOpenChange: (open: boolean) => void }) => {
 	const user = useContext(UserContext);
 
     async function handleInviteUser(e: React.FormEvent<HTMLFormElement>) {
@@ -37,10 +37,7 @@ export const InviteButton = () => {
     }
 
 	return (
-		<Dialog>
-			<DialogTrigger asChild>
-				<Button variant="outline">ユーザ招待</Button>
-			</DialogTrigger>
+		<Dialog open={open} onOpenChange={onOpenChange}>
 			<DialogContent className="sm:max-w-[500px]" onOpenAutoFocus={(e) => {e.preventDefault()}} >
 				<DialogHeader>
 					<DialogTitle>ユーザ招待</DialogTitle>

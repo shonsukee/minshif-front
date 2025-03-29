@@ -14,7 +14,8 @@ const RedirectPage = () => {
 		: '';
 
 	useEffect(() => {
-        if (status !== 'authenticated') return;
+		console.log('status:', status);
+		if (status !== 'authenticated') return;
 
 		const sendSessionData = async () => {
 			if (session?.user) {
@@ -43,13 +44,13 @@ const RedirectPage = () => {
 					router.push("/store/create");
 				}
 			} else {
-                router.push("/");
-            }
+				router.push("/");
+			}
 		};
 		sendSessionData();
 	}, [status, session, invitation_id, router]);
 
-    if (status === 'loading') return <Spinner size="large">Loading...</Spinner>;
+	if (status === 'loading') return <Spinner size="large">Loading...</Spinner>;
 };
 
 export default RedirectPage;
