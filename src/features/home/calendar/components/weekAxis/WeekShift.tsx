@@ -129,7 +129,9 @@ export const WeekShift = ({
 								className="cell w-full"
 							>
 								<div className="bg-amber-500 rounded-lg flex items-center justify-center hover:shadow-md hover:bg-amber-600">
-									{extractTimeforUI(registeredShift.start_time)} ~ {extractTimeforUI(registeredShift.end_time)}
+									<span className="truncate overflow-hidden whitespace-nowrap max-w-full">
+										{extractTimeforUI(registeredShift.start_time)} ~ {extractTimeforUI(registeredShift.end_time)}
+									</span>
 								</div>
 							</div>
 						) : shift ? (
@@ -155,7 +157,9 @@ export const WeekShift = ({
 									className="cell w-full"
 								>
 									<div className="bg-red-500 rounded-lg flex items-center justify-center hover:shadow-md hover:bg-red-600">
-										{extractTimeforUI(unregisteredShift.start_time)} ~ {extractTimeforUI(unregisteredShift.end_time)}
+										<span className="truncate overflow-hidden whitespace-nowrap max-w-full">
+											{extractTimeforUI(unregisteredShift.start_time)} ~ {extractTimeforUI(unregisteredShift.end_time)}
+										</span>
 									</div>
 								</div>
 							) : (
@@ -172,10 +176,10 @@ export const WeekShift = ({
 		<div>
 			{/* 縦軸：1週間の日付表示 */}
 			<div className="weekContainer">
-				<div className="headline">
+				<div className="headline w-[50px] lg:w-[202px]">
 					GMT +9
 				</div>
-				<div className="element-space" />
+				<div className="hidden sm:block sm:w-[9px] sm:min-w-[9px]" />
 				<div className="dateContainer">
 					{dayList.map((dayItem, index) => {
 						const dayInfo = DAY_LIST.find((day) => day.id === dayItem.day);
@@ -207,7 +211,7 @@ export const WeekShift = ({
 				<div className="timeslotBox">
 					<ul className="shiftList">
 						{Object.entries(staffList).map(([key, staff]) => (
-							<li key={key} className="timeslotItem flex justify-center items-center ">
+							<li key={key} className="timeslotItem flex justify-start items-center">
 								<Image
 									src={staff.picture}
 									alt={`staff-${key}`}
@@ -215,12 +219,14 @@ export const WeekShift = ({
 									width={40}
 									height={40}
 								/>
-								{staff.user_name}
+								<span className="hidden lg:inline min-w-[50px] lg:min-w-[150px] truncate">
+									{staff.user_name}
+								</span>
 							</li>
 						))}
 					</ul>
 				</div>
-				<div className="element-space"/>
+				<div className="hidden sm:block sm:w-[9px] sm:min-w-[9px]" />
 				{/* カレンダー要素 */}
 				<div className="calendarContainer">
 					<div className="calendarWrapper">

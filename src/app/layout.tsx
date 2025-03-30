@@ -43,7 +43,7 @@ export default async function RootLayout({
                     <div className="flex flex-1 w-full">
                       <AppSidebarWrapper />
                       <SidebarTriggerWrapper />
-                      <main className="flex-1 w-full max-w-7xl px-4 mx-auto sm:px-5 py-4">
+                      <main className="flex-1 w-full px-4 sm:px-5 py-4 overflow-x-auto">
                         {children}
                       </main>
                     </div>
