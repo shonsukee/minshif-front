@@ -30,11 +30,11 @@ export type ShiftHistory = {
 export type WeekAxisCalendarProps = {
 	date: Date;
 	setDate: React.Dispatch<React.SetStateAction<Date>>;
-	shifts: Shift[],
-	setShifts: setShifts;
+	pendingShifts: Shift[],
+	setPendingShifts: setPendingShifts;
 }
 
-export type setShifts = React.Dispatch<React.SetStateAction<Array<Shift>>>;
+export type setPendingShifts = React.Dispatch<React.SetStateAction<Array<Shift>>>;
 
 export type Day = {
 	day: number;

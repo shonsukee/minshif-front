@@ -1,5 +1,5 @@
 import { DAY_LIST } from "../constant/index";
-import { DayList, Staff, StaffList, Shift, ShiftList, setShifts } from "../../types/index";
+import { DayList, Staff, StaffList, Shift, ShiftList, setPendingShifts } from "../../types/index";
 import { useContext, useEffect, useState } from "react";
 import FetchStaffList from "@/features/home/api/FetchStaffList";
 import FetchShiftList from "@/features/home/api/FetchShiftList";
@@ -14,12 +14,12 @@ import { UserContext } from "@/features/context/UserContext";
 
 export const WeekShift = ({
 	dayList,
-	shifts,
-	setShifts
+	pendingShifts,
+	setPendingShifts
 }: {
 	dayList: DayList,
-	shifts: Shift[],
-	setShifts: setShifts
+	pendingShifts: Shift[],
+	setPendingShifts: setPendingShifts
 }) => {
 	const { data: session } = useSession();
 	const membershipContext = useContext(MembershipContext);
@@ -101,12 +101,18 @@ export const WeekShift = ({
 		<div
 			key={shiftIndex}
 			onClick={membership?.privilege === "manager" ? () => handleCellClick(staff, date, unregisteredShift) : undefined}
-			// className={`cell ${membership?.membership?.privilege !== "staff" ? "pointer-events-none" : ""}`}
 			className="cell"
 
 		/>
 	);
 
+	useEffect(() => {
+		console.log("shiftList", shiftList);
+	}, [shiftList]);
+	// TODO: 緑色のシフトが表示されない！！！
+	// newShiftsで，シフトが新しく追加されていないっぽい？？
+	// is_registeredで判定しているので，新規追加の場合はis_registeredがfalseになるので，新規追加の場合は緑色のシフトが表示されない
+	// is_registeredがfalseの場合は希望シフト，trueの場合は登録されたシフト，pendingShiftsは登録を保留しているシフト！！！
 	/**
 	 * シフトのセル
 	 * @param date
@@ -114,34 +120,46 @@ export const WeekShift = ({
 	 */
 	const Cell = ({ date }: { date: string }) => (
 		<>
+		{/* 
+		1. 登録されてるシフトのみ
+		→オレンジ
+		2. 希望シフトのみ
+		→赤
+		3. 両方
+		→オレンジと赤
+		4. 登録されていない仮シフト
+		→緑
+		 */}
 			{staffList.map((staff, staffIndex) => {
 				const shifts = findShifts(shiftList[staffIndex], date, staff);
-				const shift = shifts.find((draft) => draft.date === date && draft.email === staff.email);
 				const registeredShift = shifts.find(shift => shift.is_registered) ?? null;
 				const unregisteredShift = shifts.find(shift => !shift.is_registered) ?? null;
+				const pendingShift = pendingShifts.find(shift => shift.date === date && shift.email === staff.email) ?? null;
 
 				return (
 					<div key={`staff-${staffIndex}`} className="staff">
-						{registeredShift ? (
+						{pendingShift ? (
+							<div
+								key={`draft-${staffIndex}-${pendingShift.id}`}
+								onClick={() => handleCellClick(staff, date, pendingShift)}
+								className="cell w-full"
+							>
+								<div className=" text-sm bg-lime-500 rounded-lg flex items-center justify-center hover:shadow-md hover:bg-lime-600">
+									<span className="px-1 text-sm truncate overflow-hidden whitespace-nowrap max-w-full">
+										{format_time(pendingShift.start_time)} ~ {format_time(pendingShift.end_time)}
+									</span>
+								</div>
+							</div>
+						) : registeredShift ? (
 							<div
 								key={`registered-${staffIndex}-${registeredShift.id}`}
 								onClick={() => handleCellClick(staff, date, registeredShift)}
 								className="cell w-full"
 							>
 								<div className="bg-amber-500 rounded-lg flex items-center justify-center hover:shadow-md hover:bg-amber-600">
-									<span className="truncate overflow-hidden whitespace-nowrap max-w-full">
+									<span className="px-1 text-sm truncate overflow-hidden whitespace-nowrap max-w-full">
 										{extractTimeforUI(registeredShift.start_time)} ~ {extractTimeforUI(registeredShift.end_time)}
 									</span>
-								</div>
-							</div>
-						) : shift ? (
-							<div
-								key={`draft-${staffIndex}-${shift.id}`}
-								onClick={() => handleCellClick(staff, date, shift)}
-								className="cell w-full"
-							>
-								<div className="bg-lime-500 rounded-lg flex items-center justify-center hover:shadow-md hover:bg-lime-600">
-									{format_time(shift.start_time)} ~ {format_time(shift.end_time)}
 								</div>
 							</div>
 						) : (
@@ -157,7 +175,7 @@ export const WeekShift = ({
 									className="cell w-full"
 								>
 									<div className="bg-red-500 rounded-lg flex items-center justify-center hover:shadow-md hover:bg-red-600">
-										<span className="truncate overflow-hidden whitespace-nowrap max-w-full">
+										<span className="px-1 text-sm truncate overflow-hidden whitespace-nowrap max-w-full">
 											{extractTimeforUI(unregisteredShift.start_time)} ~ {extractTimeforUI(unregisteredShift.end_time)}
 										</span>
 									</div>
@@ -260,7 +278,7 @@ export const WeekShift = ({
 					date={selectedDate}
 					staff={selectedStaff}
 					shift={selectedShift}
-					setShifts={setShifts}
+					setPendingShifts={setPendingShifts}
 					onClose={() => setIsOpen(false)}
 				/>
 			)}

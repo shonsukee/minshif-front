@@ -10,7 +10,12 @@ export default async function StaticPage() {
 	return (
 		<>
 			<div className="container mx-auto px-4">
-				<div className="grid grid-cols-1 xl:grid-cols-12 gap-8 mb-20">
+				<div className="relative grid grid-cols-1 xl:grid-cols-12 mb-20 gap-8 min-h-[calc(100vh-160px)]">
+					{/* 背景円（オレンジ） */}
+					<div className="absolute z_1 top-[-100px] left-[-100px] md:top-[-150px] md:left-[-150px] w-[400px] h-[400px] md:w-[600px] md:h-[600px] bg-orange-100 rounded-full opacity-50 pointer-events-none" />
+					{/* 背景円（黄色） */}
+					<div className="absolute z_1 bottom-[-100px] right-[-100px] md:bottom-[-150px] md:right-[-150px] w-[400px] h-[400px] md:w-[600px] md:h-[600px] bg-yellow-100 rounded-full opacity-50 pointer-events-none" />
+
 					{/* テキストセクション */}
 					<div className="xl:col-span-2 xl:col-start-2 flex flex-col justify-center items-center xl:items-start text-center xl:text-left">
 						<Typewriter
@@ -39,10 +44,10 @@ export default async function StaticPage() {
 
 					{/* 画像セクション */}
 					<div className="xl:col-span-7 xl:col-start-6">
-						<div className="relative w-full h-full">
+						<div className="relative w-full h-full flex justify-center">
 							<Image
 								alt='pc'
-								src='/img/pc.svg'
+								src='/img/pc.png'
 								className="object-contain"
 								width={1000}
 								height={300}

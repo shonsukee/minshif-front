@@ -29,7 +29,7 @@ export const InviteButton = ({ open, onOpenChange }: { open: boolean, onOpenChan
             }
 
             const response = await InviteUser(email, user?.user?.id);
-            alert(response.msg);
+            alert(response.message);
         } catch (error) {
             console.error('招待処理でエラーが発生しました:', error);
             alert('招待処理に失敗しました。もう一度お試しください。');

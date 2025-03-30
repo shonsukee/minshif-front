@@ -40,12 +40,12 @@ export default async function RootLayout({
               <MembershipProvider>
                 <ShiftSubmissionProvider>
                   <SidebarProvider defaultOpen={defaultOpen}>
-                    <div className="flex flex-1 w-full">
-                      <AppSidebarWrapper />
-                      <SidebarTriggerWrapper />
-                      <main className="flex-1 w-full px-4 sm:px-5 py-4 overflow-x-auto">
-                        {children}
-                      </main>
+                    <div className="flex flex-1 w-full overflow-hidden">
+                        <AppSidebarWrapper />
+                        <SidebarTriggerWrapper />
+                        <main className="flex-1 w-full px-4 sm:px-5 py-4 overflow-x-auto">
+                            {children}
+                        </main>
                     </div>
                   </SidebarProvider>
                 </ShiftSubmissionProvider>
