@@ -1,20 +1,20 @@
 import React from "react";
 import { ShiftModalContent } from "@/features/home/calendar/components/shift/ShiftModalContent";
-import { Staff, Shift, setShifts } from "../../types";
+import { Staff, Shift, setPendingShifts } from "../../types";
 
 const ShiftModal = ({
 	isOpen,
 	date,
 	staff,
 	shift,
-	setShifts,
+	setPendingShifts,
 	onClose
 }: {
 	isOpen: boolean,
 	date: string,
 	staff: Staff,
 	shift: Shift | null,
-	setShifts: setShifts,
+	setPendingShifts: setPendingShifts,
 	onClose: () => void
 }) => {
 	if (!isOpen) return null;
@@ -26,7 +26,7 @@ const ShiftModal = ({
 					date={date}
 					staff={staff}
 					shift={shift}
-					setShifts={setShifts}
+					setPendingShifts={setPendingShifts}
 					onClose={onClose}
 				/>
 			</div>

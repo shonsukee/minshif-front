@@ -3,7 +3,7 @@ import RegisterShifts from "@/features/home/api/RegisterShifts";
 import { Shift } from "../../types";
 import { useSession } from "next-auth/react";
 
-const RegisterShiftsButton = ({shifts}: {shifts: Shift[]}) => {
+const RegisterShiftsButton = ({pendingShifts}: {pendingShifts: Shift[]}) => {
 	const { data: session } = useSession();
 	const handleRegisterShifts = async () => {
 		if (!session?.user?.email) {
@@ -11,7 +11,7 @@ const RegisterShiftsButton = ({shifts}: {shifts: Shift[]}) => {
 			return;
 		}
 
-		const data = await RegisterShifts(session.user.email, shifts);
+		const data = await RegisterShifts(session.user.email, pendingShifts);
 		if (data.error) {
 			alert(data.error);
 		} else {

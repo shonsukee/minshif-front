@@ -1,5 +1,5 @@
 import React, { useContext, useRef } from "react";
-import { Staff, Shift, setShifts } from "../../types";
+import { Staff, Shift, setPendingShifts } from "../../types";
 import { formatTimeToISO, format_jp_date, format_time, isStartTimeBeforeEndTime } from "@/features/util/datetime";
 import { Button } from "@/features/components/ui/button"
 import {
@@ -18,13 +18,13 @@ export const ShiftModalContent = ({
 	date,
 	staff,
 	shift,
-	setShifts,
+	setPendingShifts,
 	onClose
 }: {
 	date: string,
 	staff: Staff,
 	shift: Shift | null,
-	setShifts: setShifts,
+	setPendingShifts: setPendingShifts,
 	onClose: () => void
 }) => {
 	const membership = useContext(MembershipContext);
@@ -46,8 +46,10 @@ export const ShiftModalContent = ({
 			return;
 		}
 
-		setShifts((prev) => {
+		console.log("開始！");
+		setPendingShifts((prev) => {
 			const newShifts = prev.filter((shifts) => new Date(shifts.date).getTime() !== new Date(date).getTime());
+			console.log(newShifts);
 			newShifts.push({
 				id: shift ? shift.id : null,
 				email: staff.email,

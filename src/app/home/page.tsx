@@ -12,7 +12,7 @@ export default function Home() {
 	const [date, setDate] = useState(new Date());
 
 	// 登録予定シフト
-	const [shifts, setShifts] = useState<Shift[]>([]);
+	const [pendingShifts, setPendingShifts] = useState<Shift[]>([]);
 
 	const _start_date = format(startOfWeek(date), 'yyyy年MM月');
 	const _end_date = format(endOfWeek(date), 'yyyy年MM月');
@@ -38,9 +38,9 @@ export default function Home() {
 					<ChevronRightIcon className="h-4 w-4" />
 				</Button>
 			</div>
-			<WeekAxisCalendar shifts={shifts} setShifts={setShifts} date={date} setDate={setDate} />
-			{shifts.length > 0 && (
-				<RegisterShiftsButton shifts={shifts} />
+			<WeekAxisCalendar pendingShifts={pendingShifts} setPendingShifts={setPendingShifts} date={date} setDate={setDate} />
+			{pendingShifts.length > 0 && (
+				<RegisterShiftsButton pendingShifts={pendingShifts} />
 			)}
 		</div>
 	);
