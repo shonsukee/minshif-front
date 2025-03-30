@@ -1,6 +1,6 @@
 "use client"
 
-import { Plus, ChevronDown, Home } from "lucide-react"
+import { Home } from "lucide-react"
 import {
   Sidebar,
   SidebarContent,
@@ -12,7 +12,6 @@ import {
   SidebarMenuItem,
   SidebarMenuSkeleton,
 } from "@/features/components/ui/sidebar"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/features/components/ui/dropdown-menu"
 import { useSession } from "next-auth/react"
 import { useContext } from "react"
 import { MembershipContext } from "@/features/context/MembershipContext"
@@ -20,6 +19,7 @@ import { InviteMembersMenuItem } from "./InviteMembersMenuItem"
 import { SubmissionRequestMenuItem } from "./SubmissionRequestMenuItem"
 import { AddLINEBotMenuItem } from "./AddLINEBotMenuItem"
 import { SubmissionMenuItem } from "./SubmissionMenuItem"
+import { SelectStoreMenuItem } from "./SelectStoreMenuItem"
 
 const page_items = [
   {
@@ -48,30 +48,7 @@ export function AppSidebar() {
   return (
     <Sidebar collapsible="offcanvas" >
       <SidebarContent>
-        <SidebarMenuItem className="pt-10">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <SidebarMenuButton>
-                Select Store
-                <ChevronDown className="ml-auto" />
-              </SidebarMenuButton>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-[--radix-popper-anchor-width]">
-              <DropdownMenuItem>
-                <span>Acme Inc</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <span>Acme Corp.</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <a href={"/store/create"} className="flex w-full items-center justify-between gap-2">
-                    <span>Create new store</span>
-                    <Plus />
-                </a>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </SidebarMenuItem>
+        <SelectStoreMenuItem />
 
         <SidebarGroup>
           <SidebarGroupLabel>Pages</SidebarGroupLabel>

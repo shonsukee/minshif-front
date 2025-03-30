@@ -17,7 +17,7 @@ const FetchMembership = async (email: string): Promise<MembershipContextType> =>
 		return data;
 	} catch(error) {
 		console.error(error);
-		return { membership: null };
+		return { membership: null, refetchMembership: () => {} };
 	}
 };
 

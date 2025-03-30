@@ -38,6 +38,12 @@ export const MembershipProvider = ({ children }: { children: ReactNode }) => {
 		}
 	}, []);
 
+	const refetchMembership = useCallback(() => {
+		if (session?.user?.email) {
+			fetchMembershipInfo(session.user.email);
+		}
+	}, [session, fetchMembershipInfo]);
+
 	// セッションの有効期限が来たらユーザ情報を再取得
 	const startTimeout = useCallback(() => {
 		if (session?.user?.email && session.expires) {
@@ -82,7 +88,7 @@ export const MembershipProvider = ({ children }: { children: ReactNode }) => {
 	if (loading && !membership) return <Spinner size="large">Loading...</Spinner>;
 
 	return (
-		<MembershipContext.Provider value={{ membership }}>
+		<MembershipContext.Provider value={{ membership, refetchMembership }}>
 			{children}
 		</MembershipContext.Provider>
 	);
