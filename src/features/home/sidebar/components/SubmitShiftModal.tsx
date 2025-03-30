@@ -52,7 +52,7 @@ export const SubmitShiftModal = ({ open, onOpenChange }: { open: boolean, onOpen
 		if (!response || response['error']) {
 			alert("シフト提出依頼に失敗しました。");
 		} else {
-			alert(response['msg']);
+			alert(response['message']);
 			onOpenChange(false);
 		}
 	};

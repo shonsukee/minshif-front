@@ -4,18 +4,14 @@ const InviteUser = async (email: string, managerId: string | undefined) => {
             throw new Error('管理者IDが指定されていません');
         }
 
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/invitation`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/invitations`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                invitee: {
-                    email: email
-                },
-                manager: {
-                    user_id: managerId,
-                }
+                invitee_email: email,
+                manager_id: managerId,
             }),
         });
 
