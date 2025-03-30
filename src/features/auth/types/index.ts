@@ -35,4 +35,5 @@ export type Membership = {
 
 export type MembershipContextType = {
 	membership: Membership | null;
+	refetchMembership: () => void;
 }
