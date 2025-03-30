@@ -1,7 +1,6 @@
 const SwitchStore = async (user_id: string | undefined, store_id: string | undefined ) => {
-	if (!user_id) return 'user_id is required';
-	if (!store_id) return 'store_id is required';
-
+	if (!user_id) throw new Error('user_id is required');
+	if (!store_id) throw new Error('store_id is required');
 	try{
 		const response = await fetch(process.env.NEXT_PUBLIC_API_URL + '/stores/switch', {
 			method: 'POST',
