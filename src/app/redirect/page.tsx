@@ -14,7 +14,6 @@ const RedirectPage = () => {
 		: '';
 
 	useEffect(() => {
-		console.log('status:', status);
 		if (status !== 'authenticated') return;
 
 		const sendSessionData = async () => {

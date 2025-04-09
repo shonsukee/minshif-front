@@ -46,10 +46,8 @@ export const ShiftModalContent = ({
 			return;
 		}
 
-		console.log("開始！");
 		setPendingShifts((prev) => {
 			const newShifts = prev.filter((shifts) => new Date(shifts.date).getTime() !== new Date(date).getTime());
-			console.log(newShifts);
 			newShifts.push({
 				id: shift ? shift.id : null,
 				email: staff.email,

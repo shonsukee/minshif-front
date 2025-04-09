@@ -106,13 +106,6 @@ export const WeekShift = ({
 		/>
 	);
 
-	useEffect(() => {
-		console.log("shiftList", shiftList);
-	}, [shiftList]);
-	// TODO: 緑色のシフトが表示されない！！！
-	// newShiftsで，シフトが新しく追加されていないっぽい？？
-	// is_registeredで判定しているので，新規追加の場合はis_registeredがfalseになるので，新規追加の場合は緑色のシフトが表示されない
-	// is_registeredがfalseの場合は希望シフト，trueの場合は登録されたシフト，pendingShiftsは登録を保留しているシフト！！！
 	/**
 	 * シフトのセル
 	 * @param date
@@ -120,16 +113,6 @@ export const WeekShift = ({
 	 */
 	const Cell = ({ date }: { date: string }) => (
 		<>
-		{/* 
-		1. 登録されてるシフトのみ
-		→オレンジ
-		2. 希望シフトのみ
-		→赤
-		3. 両方
-		→オレンジと赤
-		4. 登録されていない仮シフト
-		→緑
-		 */}
 			{staffList.map((staff, staffIndex) => {
 				const shifts = findShifts(shiftList[staffIndex], date, staff);
 				const registeredShift = shifts.find(shift => shift.is_registered) ?? null;
