@@ -4,6 +4,7 @@ import FetchMembership from '@/features/auth/api/FetchMembership';
 import { Membership, MembershipContextType } from '@/features/auth/types/index';
 import { useSession } from 'next-auth/react';
 import { Spinner } from '../components/ui/spinner';
+import { notifyError } from '../components/ui/toast';
 
 export const MembershipContext = createContext<MembershipContextType | null>(null);
 
@@ -16,22 +17,30 @@ export const MembershipProvider = ({ children }: { children: ReactNode }) => {
 	const fetchMembershipInfo = useCallback(async (email: string) => {
 		setLoading(true);
 		try {
-			const response = await FetchMembership(email) ?? null;
+			const response = await FetchMembership(email);
 
-			if (response === null || response['membership'] === null) {
+			if (!response || 'error' in response) {
 				setMembership(null);
-			} else {
-				setMembership({
-					id: response['membership']['id'],
-					user_id: response['membership']['user_id'],
-					store_id: response['membership']['store_id'],
-					current_store: response['membership']['current_store'],
-					privilege: response['membership']['privilege'],
-					calendar_id: response['membership']['calendar_id'],
-				});
+				notifyError('ユーザ情報の取得中にエラーが発生しました');
+				return;
 			}
+			const { membership } = response.data;
+			if (!membership) {
+				setMembership(null);
+				notifyError('ユーザ情報の取得中にエラーが発生しました');
+				return;
+			}
+
+			setMembership({
+				id: membership.id,
+				user_id: membership.user_id,
+				store_id: membership.store_id,
+				current_store: membership.current_store,
+				privilege: membership.privilege,
+				calendar_id: membership.calendar_id,
+			});
 		} catch (error) {
-			console.error('ユーザ情報の取得中にエラーが発生しました:', error);
+			notifyError('ユーザ情報の取得中にエラーが発生しました');
 			setMembership(null);
 		} finally {
 			setLoading(false);

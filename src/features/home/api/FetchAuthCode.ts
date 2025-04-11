@@ -1,29 +1,23 @@
-interface FetchAuthCodeProps {
-    id: number;
-    user_id: string;
-    auth_code: number;
-    created_at: string;
-    updated_at: string;
-}
+import { Result, FetchAuthCodeProps } from ".";
 
-const FetchAuthCode = async ( user_id: string ): Promise<FetchAuthCodeProps | null> => {
+const FetchAuthCode = async ( user_id: string ): Promise<Result<FetchAuthCodeProps>> => {
 	try{
 		const response = await fetch(process.env.NEXT_PUBLIC_API_URL + `/bots/code?user_id=${user_id}`, {
 			method: 'GET',
 			headers: {
-				'Content-Type': 'application/json',
+				'Accept': 'application/json',
 			}
 		});
 
-		if (!response.ok) {
-			throw new Error('再ログインしてください');
-		}
 		const data = await response.json();
 
+		if (!response.ok) {
+			throw new Error(data.message);
+		}
+
 		return data;
-	} catch(error) {
-		console.error(error);
-		return null;
+	} catch (error) {
+		return { error: '不明なエラーが発生しました' };
 	}
 }
 

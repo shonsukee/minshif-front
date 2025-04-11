@@ -4,6 +4,8 @@ import FetchPreferredShiftPeriod from '../home/api/FetchPreferredShiftPeriod';
 import { ShiftSubmissionRequest, ShiftSubmissionContextType } from '@/features/auth/types/index';
 import { useSession } from 'next-auth/react';
 import { Spinner } from '../components/ui/spinner';
+import { Result } from '@/features/home/api';
+import { notifyError } from '../components/ui/toast';
 
 export const ShiftSubmissionContext = createContext<ShiftSubmissionContextType | undefined>(undefined);
 
@@ -16,14 +18,16 @@ export const ShiftSubmissionProvider = ({ children }: { children: ReactNode }) =
 	const fetchSubmissionInfo = async (email: string) => {
 		setLoading(true);
 		try {
-			const result = await FetchPreferredShiftPeriod(email);
-			if (result['data'].length > 0) {
+			const result: Result<ShiftSubmissionRequest[]> = await FetchPreferredShiftPeriod(email);
+			if (result && 'data' in result) {
 				setShiftSubmissionRequest(result['data']);
-			} else {
+			} else if ('error' in result) {
+				notifyError(result['error']);
 				setShiftSubmissionRequest([]);
 			}
 		} catch (error) {
-			console.error('シフト情報の取得中にエラーが発生しました:', error);
+			if (error instanceof Error) notifyError(error.message);
+			else notifyError('シフト情報の取得中にエラーが発生しました');
 			setShiftSubmissionRequest([]);
 		} finally {
 			setLoading(false);

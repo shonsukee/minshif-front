@@ -4,9 +4,10 @@ import TextBox from '@/features/store/components/TextBox'
 import SubmitButton from '@/features/store/components/SubmitButton'
 import Link from 'next/link'
 import CreateStore from '@/features/store/api/CreateStore'
-import { StoreCreateProps } from '@/features/store/types'
 import { useRouter } from 'next/navigation'
 import { UserContext } from '@/features/context/UserContext'
+import { notifyError, notifySuccess } from '@/features/components/ui/toast'
+import { Result } from '@/features/home/api'
 
 export default function StoreCreate() {
 	const userContext = useContext(UserContext);
@@ -21,17 +22,19 @@ export default function StoreCreate() {
 			return;
 		}
 
-		const response: StoreCreateProps = await CreateStore({
+		const response: Result<string> = await CreateStore({
 			id: user?.id as string,
 			name: storeName,
 			location: "日本",
 		});
 
-		if (response['response']) {
-			router.push('/home');
-		} else {
-			alert(response['error']);
+		if ('error' in response) {
+			notifyError(response['error']);
+			return;
 		}
+
+		router.push('/home');
+		notifySuccess(response['data']);
 	}
 
 	return (

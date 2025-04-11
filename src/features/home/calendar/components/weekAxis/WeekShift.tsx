@@ -11,6 +11,8 @@ import Image from "next/image";
 import { extractTimeforUI } from "@/features/util/datetime";
 import { MembershipContext } from "@/features/context/MembershipContext";
 import { UserContext } from "@/features/context/UserContext";
+import { Result } from '@/features/home/api';
+import { notifyError } from "@/features/components/ui/toast";
 
 export const WeekShift = ({
 	dayList,
@@ -40,8 +42,10 @@ export const WeekShift = ({
 		const fetchStaff = async () => {
 			if (session && membership?.store_id) {
 				try {
-					const response = await FetchStaffList(membership.store_id);
-					setStaffList(response);
+					const response: Result<StaffList> = await FetchStaffList(membership.store_id);
+					if (response && 'data' in response) {
+						setStaffList(response['data']);
+					}
 				} catch (error) {
 					console.error("Failed to fetch staff list", error);
 				}
@@ -60,8 +64,14 @@ export const WeekShift = ({
 				try {
 					const start_date = addDays(new Date(dayList[0].date), -7).toISOString();
 					const end_date = addDays(new Date(dayList[6].date), 7).toISOString();
-					const response = await FetchShiftList(user?.id, start_date, end_date);
-					setShiftList(response);
+					const response: Result<ShiftList> = await FetchShiftList(user?.id, start_date, end_date);
+
+					if ('error' in response) {
+						notifyError(response['error']);
+						return;
+					}
+
+					setShiftList(response['data']);
 				} catch (error) {
 					console.error("Failed to fetch shift list", error);
 				}

@@ -1,7 +1,6 @@
 import React, { useContext } from "react";
 import {
 	Dialog,
-	DialogTrigger,
 	DialogContent,
 	DialogHeader,
 	DialogTitle,
@@ -13,28 +12,33 @@ import { Label } from "@/features/components/ui/label";
 import { Input } from "@/features/components/ui/input";
 import InviteUser from "../../api/InviteUser";
 import { UserContext } from "@/features/context/UserContext";
+import { notifyError, notifySuccess } from "@/features/components/ui/toast";
 
 export const InviteButton = ({ open, onOpenChange }: { open: boolean, onOpenChange: (open: boolean) => void }) => {
 	const user = useContext(UserContext);
 
-    async function handleInviteUser(e: React.FormEvent<HTMLFormElement>) {
-        e.preventDefault();
-        try {
-            const formData = new FormData(e.target as HTMLFormElement);
-            const email = formData.get('email') as string;
+	async function handleInviteUser(e: React.FormEvent<HTMLFormElement>) {
+		e.preventDefault();
+		try {
+			const formData = new FormData(e.target as HTMLFormElement);
+			const email = formData.get('email') as string;
 
-            if (!email) {
-                alert('メールアドレスを入力してください。');
-                return;
-            }
+			if (!email) {
+				notifyError('メールアドレスを入力してください。');
+				return;
+			}
 
-            const response = await InviteUser(email, user?.user?.id);
-            alert(response.message);
-        } catch (error) {
-            console.error('招待処理でエラーが発生しました:', error);
-            alert('招待処理に失敗しました。もう一度お試しください。');
-        }
-    }
+			const response = await InviteUser(email, user?.user?.id);
+			if ('data' in response) {
+				notifySuccess(response.data);
+			} else {
+				notifyError(response.error);
+			}
+		} catch (error) {
+			console.error('招待処理でエラーが発生しました:', error);
+			notifyError('招待処理でエラーが発生しました。');
+		}
+	}
 
 	return (
 		<Dialog open={open} onOpenChange={onOpenChange}>

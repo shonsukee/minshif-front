@@ -2,20 +2,22 @@ import React from "react";
 import RegisterShifts from "@/features/home/api/RegisterShifts";
 import { Shift } from "../../types";
 import { useSession } from "next-auth/react";
+import { notifyError, notifySuccess } from "@/features/components/ui/toast";
 
 const RegisterShiftsButton = ({pendingShifts}: {pendingShifts: Shift[]}) => {
 	const { data: session } = useSession();
 	const handleRegisterShifts = async () => {
 		if (!session?.user?.email) {
-			alert('再ログインしてください');
+			notifyError('再ログインしてください');
 			return;
 		}
 
-		const data = await RegisterShifts(session.user.email, pendingShifts);
-		if (data.error) {
-			alert(data.error);
+		const response = await RegisterShifts(session.user.email, pendingShifts);
+
+		if ('error' in response || !response ) {
+			notifyError(response.error);
 		} else {
-			alert(data.message);
+			notifySuccess(response.data);
 		}
 	};
 

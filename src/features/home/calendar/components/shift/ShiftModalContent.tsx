@@ -13,6 +13,7 @@ import {
 import { Input } from "@/features/components/ui/input"
 import { Label } from "@/features/components/ui/label"
 import { MembershipContext } from "@/features/context/MembershipContext";
+import { notifyError } from "@/features/components/ui/toast";
 
 export const ShiftModalContent = ({
 	date,
@@ -42,7 +43,7 @@ export const ShiftModalContent = ({
 		const notes = notesRef.current ? notesRef.current.value : "";
 
 		if (!isStartTimeBeforeEndTime(start_time, end_time)) {
-			alert("開始時間が終了時間と同じか，過去の時間を選択しています。");
+			notifyError("開始時間が終了時間より後の時間を選択しています。");
 			return;
 		}
 

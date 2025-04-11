@@ -1,20 +1,24 @@
-const FetchPreferredShiftPeriod = async ( email: string ) => {
+import { ShiftSubmissionRequest } from '@/features/auth/types/index';
+import { Result } from '.';
+
+const FetchPreferredShiftPeriod = async ( email: string ): Promise<Result<ShiftSubmissionRequest[]>> => {
 	try{
 		const response = await fetch(process.env.NEXT_PUBLIC_API_URL + `/shift-submission-requests?email=${email}`, {
 			method: 'GET',
 			headers: {
-				'Content-Type': 'application/json',
-			},
+				'Accept': 'application/json'
+			}
 		});
 
-		if (!response.ok) {
-			throw new Error('シフトの登録に失敗しました');
+		const data = await response.json();
+
+		if (!response.ok && data.error) {
+			return { error: data.error };
 		}
 
-		const data = await response.json();
 		return data;
 	} catch(error) {
-		return error;
+		return { error: '不明なエラーが発生しました' };
 	}
 }
 

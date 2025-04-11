@@ -8,6 +8,7 @@ import { UserContext } from '@/features/context/UserContext';
 import { Shift, ShiftHistory } from '@/features/home/calendar/types';
 import { extractDate, extractYMD } from '@/features/util/datetime';
 import Image from 'next/image';
+import { notifyError } from '@/features/components/ui/toast';
 
 const JP_LOCALE = 9 * 3600000;
 
@@ -35,7 +36,6 @@ export const PreferredShiftForm = (
 	const [startTime, setStartTime] = useState("09:00");
 	const [endTime, setEndTime] = useState("18:00");
 	const [notes, setNotes] = useState("");
-	const [error, setError] = useState<string | null>(null);
 	// 仮希望シフトの履歴を表示するJSX
 	const [calHistory, setCalHistory] = useState<JSX.Element[]>([]);
 	// シフト登録履歴
@@ -92,7 +92,9 @@ export const PreferredShiftForm = (
 
 	const handleTimeChange = (newStart: string, newEnd: string) => {
 		const errorMessage = validateTimeRange(newStart, newEnd);
-		setError(errorMessage);
+		if (errorMessage) {
+			notifyError(errorMessage);
+		}
 	};
 
 	const handleNotesChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -116,10 +118,6 @@ export const PreferredShiftForm = (
 	// 仮希望シフトを登録
 	const handleRegister = (e: React.FormEvent) => {
 		e.preventDefault();
-		if (error) {
-			console.log(error);
-			return;
-		}
 		const newShift: Shift = {
 			id: null,
 			email:		user?.user?.email || "",
@@ -164,11 +162,10 @@ export const PreferredShiftForm = (
 		e.preventDefault();
 
 		const response = await RegisterPreferredShifts(shifts, user?.user?.email);
-		if (response.status === 200) {
+
+		if (response && 'data' in response) {
 			router.push('/home');
-			return;
 		}
-		setError(response.error);
 	}
 
 	return (
