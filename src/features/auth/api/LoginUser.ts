@@ -18,7 +18,7 @@ const LoginUser = async (code: string, invitation_id: string | null, user: User)
 		const data = await response.json();
 
 		if (!response.ok) {
-			throw new Error('不明なエラーが発生しました');
+			return { error: '不明なエラーが発生しました' };
 		}
 
 		return { data: data };

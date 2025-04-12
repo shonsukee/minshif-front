@@ -23,14 +23,14 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
 			if (!response || 'error' in response) {
 				setUser(null);
-				notifyError('ユーザ情報の取得中にエラーが発生しました11');
+				notifyError('ユーザ情報の取得中にエラーが発生しました');
 				return;
 			}
 
 			const userData = response.data;
 			if (!userData) {
 				setUser(null);
-				notifyError('ユーザ情報の取得中にエラーが発生しました22');
+				notifyError('ユーザ情報の取得中にエラーが発生しました');
 				return;
 			}
 
@@ -41,7 +41,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 				picture: userData.picture,
 			});
 		} catch (error) {
-			notifyError('ユーザ情報の取得中にエラーが発生しました33');
+			notifyError('ユーザ情報の取得中にエラーが発生しました');
 			setUser(null);
 		} finally {
 			setLoading(false);

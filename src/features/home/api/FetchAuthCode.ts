@@ -12,7 +12,7 @@ const FetchAuthCode = async ( user_id: string ): Promise<Result<FetchAuthCodePro
 		const data = await response.json();
 
 		if (!response.ok) {
-			throw new Error(data.message);
+			return { error: '不明なエラーが発生しました' };
 		}
 
 		return data;
