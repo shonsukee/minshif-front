@@ -31,8 +31,8 @@ const RedirectPage = () => {
 				);
 
 				// バックエンドが動いてない場合
-				if ('error' in response && response.error === '不明なエラーが発生しました') {
-					notifyError(response.error);
+				if ('error' in response) {
+					notifyError(response.error || '不明なエラーが発生しました');
 					await signOut({ redirect: false });
 					router.push("/");
 				}

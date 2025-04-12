@@ -19,7 +19,7 @@ const RegisterAuthCode = async (authCode: number, user_id: string): Promise<Resu
 			return { error: data.error || '不明なエラーが発生しました' };
 		}
 
-		return data;
+		return { data: data.message };
 	} catch (error) {
 		return { error: '不明なエラーが発生しました' };
 	}
