@@ -14,6 +14,7 @@ import { DateTimePicker } from "@/features/components/ui/datetime-picker";
 import { extractTime, formatDateToISO } from "@/features/util/datetime";
 import SubmitShiftRequest from "../api/SubmitShiftRequest";
 import { useSession } from 'next-auth/react';
+import { notifyError, notifySuccess } from "@/features/components/ui/toast";
 
 export const SubmitShiftModal = ({ open, onOpenChange }: { open: boolean, onOpenChange: (open: boolean) => void }) => {
 	const { data: session } = useSession();
@@ -26,17 +27,17 @@ export const SubmitShiftModal = ({ open, onOpenChange }: { open: boolean, onOpen
 		const formData = new FormData(e.target);
 		const data = Object.fromEntries(formData.entries());
 		if (!startDate || !endDate || !deadline) {
-			alert("日付を選択してください。");
+			notifyError("日付を選択してください。");
 			return;
 		}
 
 		if (startDate.getTime() > endDate.getTime()) {
-			alert("開始日付が終了日付より後の日付です。");
+			notifyError("開始日付が終了日付より後の日付を選択しています。");
 			return;
 		}
 
 		if (deadline.getTime() > startDate.getTime()) {
-			alert("締切が終了日付より後の日付です。");
+			notifyError("締切が開始日付より後の日付です。");
 			return;
 		}
 
@@ -50,9 +51,9 @@ export const SubmitShiftModal = ({ open, onOpenChange }: { open: boolean, onOpen
 
 		const response: string[] | undefined = await SubmitShiftRequest(shiftRequest, session?.user?.email);
 		if (!response || response['error']) {
-			alert("シフト提出依頼に失敗しました。");
+			notifyError("シフト提出依頼に失敗しました。");
 		} else {
-			alert(response['message']);
+			notifySuccess(response['message']);
 			onOpenChange(false);
 		}
 	};

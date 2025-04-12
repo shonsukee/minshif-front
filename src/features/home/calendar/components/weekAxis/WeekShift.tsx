@@ -11,6 +11,8 @@ import Image from "next/image";
 import { extractTimeforUI } from "@/features/util/datetime";
 import { MembershipContext } from "@/features/context/MembershipContext";
 import { UserContext } from "@/features/context/UserContext";
+import { Result } from '@/features/home/api';
+import { notifyError } from "@/features/components/ui/toast";
 
 export const WeekShift = ({
 	dayList,
@@ -40,8 +42,10 @@ export const WeekShift = ({
 		const fetchStaff = async () => {
 			if (session && membership?.store_id) {
 				try {
-					const response = await FetchStaffList(membership.store_id);
-					setStaffList(response);
+					const response: Result<StaffList> = await FetchStaffList(membership.store_id);
+					if (response && 'data' in response) {
+						setStaffList(response['data']);
+					}
 				} catch (error) {
 					console.error("Failed to fetch staff list", error);
 				}
@@ -60,8 +64,14 @@ export const WeekShift = ({
 				try {
 					const start_date = addDays(new Date(dayList[0].date), -7).toISOString();
 					const end_date = addDays(new Date(dayList[6].date), 7).toISOString();
-					const response = await FetchShiftList(user?.id, start_date, end_date);
-					setShiftList(response);
+					const response: Result<ShiftList> = await FetchShiftList(user?.id, start_date, end_date);
+
+					if ('error' in response) {
+						notifyError(response['error']);
+						return;
+					}
+
+					setShiftList(response['data']);
 				} catch (error) {
 					console.error("Failed to fetch shift list", error);
 				}
@@ -106,13 +116,6 @@ export const WeekShift = ({
 		/>
 	);
 
-	useEffect(() => {
-		console.log("shiftList", shiftList);
-	}, [shiftList]);
-	// TODO: 緑色のシフトが表示されない！！！
-	// newShiftsで，シフトが新しく追加されていないっぽい？？
-	// is_registeredで判定しているので，新規追加の場合はis_registeredがfalseになるので，新規追加の場合は緑色のシフトが表示されない
-	// is_registeredがfalseの場合は希望シフト，trueの場合は登録されたシフト，pendingShiftsは登録を保留しているシフト！！！
 	/**
 	 * シフトのセル
 	 * @param date
@@ -120,16 +123,6 @@ export const WeekShift = ({
 	 */
 	const Cell = ({ date }: { date: string }) => (
 		<>
-		{/* 
-		1. 登録されてるシフトのみ
-		→オレンジ
-		2. 希望シフトのみ
-		→赤
-		3. 両方
-		→オレンジと赤
-		4. 登録されていない仮シフト
-		→緑
-		 */}
 			{staffList.map((staff, staffIndex) => {
 				const shifts = findShifts(shiftList[staffIndex], date, staff);
 				const registeredShift = shifts.find(shift => shift.is_registered) ?? null;

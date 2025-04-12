@@ -1,7 +1,6 @@
 import Image from 'next/image';
 import {
 	Dialog,
-	DialogTrigger,
 	DialogContent,
 	DialogHeader,
 	DialogTitle,
@@ -14,6 +13,8 @@ import { useContext, useEffect, useState } from 'react';
 import RegisterAuthCode  from '@/features/home/api/RegisterAuthCode';
 import { UserContext } from '@/features/context/UserContext';
 import FetchAuthCode from '@/features/home/api/FetchAuthCode';
+import { FetchAuthCodeProps, Result } from '@/features/home/api';
+import { notifyError } from '@/features/components/ui/toast';
 
 export const LINEBotButton = ({
 	open,
@@ -31,16 +32,21 @@ export const LINEBotButton = ({
 		if (!open) return;
 
 		const initAuthCode = async () => {
-			const response = await FetchAuthCode(user?.id || '');
-			if (response !== null) {
-				setAuthCode(response['auth_code']);
-				localStorage.setItem('authCode', String(response['auth_code']));
-				localStorage.setItem('authCodeExpiration', String(response['updated_at'] + 30 * 60 * 1000));
+			const response: Result<FetchAuthCodeProps> = await FetchAuthCode(user?.id || '');
+
+			// 認証コードが保存済みの場合
+			if (response && 'data' in response) {
+				const { auth_code, updated_at } = response.data;
+				setAuthCode(auth_code);
+				localStorage.setItem('authCode', String(auth_code));
+				localStorage.setItem('authCodeExpiration', String(updated_at + 30 * 60 * 1000));
 				return;
 			}
 
+			// 認証コードが保存されていない場合
 			const authCode = localStorage.getItem('authCode');
 			const authCodeExpiration = localStorage.getItem('authCodeExpiration');
+			// ローカルにも認証コードが保存されていない場合
 			if (!authCode || !authCodeExpiration || Date.now() >= Date.parse(authCodeExpiration)) {
 				const code = AuthCode();
 				setAuthCode(code);
@@ -52,18 +58,18 @@ export const LINEBotButton = ({
 
 				// 認証コードを保存
 				const user_id = user?.id || '';
-				const data = await RegisterAuthCode(code, user_id);
+				const response = await RegisterAuthCode(code, user_id);
 
-				if (data.error) {
+				if ('error' in response) {
 					localStorage.removeItem('authCode');
 					localStorage.removeItem('authCodeExpiration');
-					alert(data.error);
+					notifyError(response['error']);
 				}
 				return;
+			} else {
+				// 認証コードの再利用
+				setAuthCode(Number(authCode));
 			}
-
-			// 認証コードの再利用
-			setAuthCode(Number(authCode));
 		}
 
 		initAuthCode();

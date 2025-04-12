@@ -1,25 +1,24 @@
 import { StaffList } from "@/features/home/calendar/types";
+import { Result } from ".";
 
-
-const FetchStaffList = async ( store_id: string ): Promise<StaffList> => {
+const FetchStaffList = async ( store_id: string ): Promise<Result<StaffList>> => {
 	try{
 		const response = await fetch(process.env.NEXT_PUBLIC_API_URL + `/stores/${store_id}/users`, {
 			method: 'GET',
 			headers: {
-				'Content-Type': 'application/json',
+				'Accept': 'application/json',
 			},
 		});
 
-		if (!response.ok) {
-			throw new Error('再ログインしてください');
-		}
-
 		const data = await response.json();
 
-		return data;
+		if (!response.ok) {
+			return { error: data.error || '不明なエラーが発生しました' };
+		}
+
+		return { data: data };
 	} catch(error) {
-		console.error(error);
-		return [];
+		return { error: '不明なエラーが発生しました' };
 	}
 }
 

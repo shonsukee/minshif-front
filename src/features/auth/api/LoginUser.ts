@@ -1,6 +1,7 @@
 import { User } from '@/features/auth/types';
+import { Result } from '@/features/home/api';
 
-const LoginUser = async (code: string, invitation_id: string | null, user: User): Promise<{message: string, is_affiliated: boolean}> => {
+const LoginUser = async (code: string, invitation_id: string | null, user: User): Promise<Result<{message: string, is_affiliated: boolean}>> => {
 	try{
 		const response = await fetch(process.env.NEXT_PUBLIC_API_URL + '/users', {
 			method: 'POST',
@@ -14,15 +15,15 @@ const LoginUser = async (code: string, invitation_id: string | null, user: User)
 			}),
 		});
 
+		const data = await response.json();
+
 		if (!response.ok) {
-			throw new Error('ログインに失敗しました');
+			return { error: '不明なエラーが発生しました' };
 		}
 
-		const data = await response.json();
-		return data;
+		return { data: data };
 	} catch(error) {
-		console.error(error);
-		return { message: 'ログインに失敗しました', is_affiliated: false };
+		return { error: '不明なエラーが発生しました' };
 	}
 };
 

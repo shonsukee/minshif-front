@@ -4,6 +4,7 @@ import FetchUserInfo from '@/features/auth/api/FetchUserInfo';
 import { User, UserContextType } from '@/features/auth/types/index';
 import { useSession } from 'next-auth/react';
 import { Spinner } from '../components/ui/spinner';
+import { notifyError } from '../components/ui/toast';
 
 export const UserContext = createContext<UserContextType | null>(null);
 
@@ -18,20 +19,29 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 			setLoading(true);
 		}
 		try {
-			const response = await FetchUserInfo(email) ?? null;
+			const response = await FetchUserInfo(email);
 
-			if (response === null || response['error']) {
+			if (!response || 'error' in response) {
 				setUser(null);
-			} else {
-				setUser({
-					id: response['id'],
-					user_name: response['user_name'],
-					email: response['email'],
-					picture: response['picture'],
-				});
+				notifyError('ユーザ情報の取得中にエラーが発生しました');
+				return;
 			}
+
+			const userData = response.data;
+			if (!userData) {
+				setUser(null);
+				notifyError('ユーザ情報の取得中にエラーが発生しました');
+				return;
+			}
+
+			setUser({
+				id: userData.id,
+				user_name: userData.user_name,
+				email: userData.email,
+				picture: userData.picture,
+			});
 		} catch (error) {
-			console.error('ユーザ情報の取得中にエラーが発生しました:', error);
+			notifyError('ユーザ情報の取得中にエラーが発生しました');
 			setUser(null);
 		} finally {
 			setLoading(false);

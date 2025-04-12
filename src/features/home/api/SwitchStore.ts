@@ -1,6 +1,9 @@
-const SwitchStore = async (user_id: string | undefined, store_id: string | undefined ) => {
-	if (!user_id) throw new Error('user_id is required');
-	if (!store_id) throw new Error('store_id is required');
+import { Result } from ".";
+import { Store } from "../sidebar/types";
+
+const SwitchStore = async (user_id: string | undefined, store_id: string | undefined ): Promise<Result<Store[]>> => {
+	if (!user_id || !store_id) throw new Error('再ログインしてください');
+
 	try{
 		const response = await fetch(process.env.NEXT_PUBLIC_API_URL + '/stores/switch', {
 			method: 'POST',
@@ -13,15 +16,15 @@ const SwitchStore = async (user_id: string | undefined, store_id: string | undef
 			})
 		});
 
+		const data = await response.json();
+
 		if (!response.ok) {
-			throw new Error('再ログインしてください');
+			return { error: data.error || '不明なエラーが発生しました' };
 		}
 
-		const data = await response.json();
 		return data;
 	} catch(error) {
-		console.error(error);
-		return error;
+		return { error: '不明なエラーが発生しました' };
 	}
 }
 

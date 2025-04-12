@@ -1,6 +1,7 @@
+import { Result } from '.';
 import { Shift } from '../calendar/types';
 
-const FetchShiftList = async ( id: string | undefined, start_date: string, end_date: string): Promise<Shift[][]> => {
+const FetchShiftList = async ( id: string | undefined, start_date: string, end_date: string): Promise<Result<Shift[][]>> => {
 	try{
 		const query = new URLSearchParams({
 			'fetch_shift[start_date]': start_date,
@@ -14,16 +15,15 @@ const FetchShiftList = async ( id: string | undefined, start_date: string, end_d
 			}
 		});
 
-		if (!response.ok) {
-			throw new Error('再ログインしてください');
-		}
-
 		const data = await response.json();
 
-		return data;
+		if (!response.ok) {
+			return { error: data.error || '不明なエラーが発生しました' };
+		}
+
+		return { data: data };
 	} catch(error) {
-		console.error(error);
-		return [];
+		return { error: '不明なエラーが発生しました' };
 	}
 }
 

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import LoginUser from '@/features/auth/api/LoginUser';
 import { Spinner } from '@/features/components/ui/spinner';
 import { signOut } from "next-auth/react";
+import { notifyError, notifySuccess } from '@/features/components/ui/toast';
 
 const RedirectPage = () => {
 	const { data: session, status } = useSession();
@@ -14,7 +15,6 @@ const RedirectPage = () => {
 		: '';
 
 	useEffect(() => {
-		console.log('status:', status);
 		if (status !== 'authenticated') return;
 
 		const sendSessionData = async () => {
@@ -31,12 +31,14 @@ const RedirectPage = () => {
 				);
 
 				// バックエンドが動いてない場合
-				if (response.message === 'ログインに失敗しました') {
-					await signOut();
-					return;
+				if ('error' in response) {
+					notifyError(response.error || '不明なエラーが発生しました');
+					await signOut({ redirect: false });
+					router.push("/");
 				}
 				// 店舗に所属している場合
-				else if (response.is_affiliated) {
+				else if ('data' in response && response.data.is_affiliated) {
+					notifySuccess(response.data.message);
 					router.push("/home");
 				}
 				// 店舗に所属していない場合
@@ -51,6 +53,7 @@ const RedirectPage = () => {
 	}, [status, session, invitation_id, router]);
 
 	if (status === 'loading') return <Spinner size="large">Loading...</Spinner>;
+	return null;
 };
 
 export default RedirectPage;

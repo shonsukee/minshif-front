@@ -1,23 +1,24 @@
+import { Result } from "@/features/home/api";
 import { MembershipContextType } from "../types";
 
-const FetchMembership = async (email: string): Promise<MembershipContextType> => {
+const FetchMembership = async (email: string): Promise<Result<MembershipContextType>> => {
 	try{
 		const response = await fetch(process.env.NEXT_PUBLIC_API_URL + `/users/memberships?email=${encodeURIComponent(email)}`, {
 			method: 'GET',
 			headers: {
-				'Content-Type': 'application/json',
+				'Accept': 'application/json',
 			},
 		});
 
+		const data = await response.json();
+
 		if (!response.ok) {
-			throw new Error('ログインに失敗しました');
+			return { error: data.error || '不明なエラーが発生しました' };
 		}
 
-		const data = await response.json();
-		return data;
+		return { data: data };
 	} catch(error) {
-		console.error(error);
-		return { membership: null, refetchMembership: () => {} };
+		return { error: '不明なエラーが発生しました' };
 	}
 };
 

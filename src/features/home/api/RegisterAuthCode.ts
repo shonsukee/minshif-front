@@ -1,4 +1,6 @@
-const RegisterAuthCode = async (authCode: number, user_id: string) => {
+import { Result } from '.';
+
+const RegisterAuthCode = async (authCode: number, user_id: string): Promise<Result<string>> => {
 	try {
 		const response = await fetch(process.env.NEXT_PUBLIC_API_URL + '/bots/code', {
 			method: 'POST',
@@ -11,16 +13,15 @@ const RegisterAuthCode = async (authCode: number, user_id: string) => {
 			})
 		});
 
-		if (!response.ok) {
-			const errorData = await response.json();
-			throw new Error(errorData.message || '再ログインしてください');
-		}
 		const data = await response.json();
 
-		return { data: data["message"], error: null };
+		if (!response.ok) {
+			return { error: data.error || '不明なエラーが発生しました' };
+		}
+
+		return { data: data.message };
 	} catch (error) {
-		console.error("Failed to register shifts", error);
-		return {'error': error};
+		return { error: '不明なエラーが発生しました' };
 	}
 }
 

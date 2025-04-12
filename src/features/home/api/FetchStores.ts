@@ -1,24 +1,24 @@
-const FetchStores = async ( id: string | undefined) => {
-	if (!id) return [];
+import { Result } from ".";
+import { Store } from "../sidebar/types";
 
+const FetchStores = async ( id: string | undefined): Promise<Result<Store[]>> => {
 	try{
 		const response = await fetch(process.env.NEXT_PUBLIC_API_URL + `/stores?id=${id}`, {
 			method: 'GET',
 			headers: {
-				'Content-Type': 'application/json',
+				'Accept': 'application/json',
 			}
 		});
 
-		if (!response.ok) {
-			throw new Error('再ログインしてください');
-		}
-
 		const data = await response.json();
 
-		return data;
+		if (!response.ok) {
+			return { error: data.error || '不明なエラーが発生しました' };
+		}
+
+		return { data: data };
 	} catch(error) {
-		console.error(error);
-		return [];
+		return { error: '不明なエラーが発生しました' };
 	}
 }
 

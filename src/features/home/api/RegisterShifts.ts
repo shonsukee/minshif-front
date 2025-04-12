@@ -1,6 +1,7 @@
+import { Result } from '.';
 import { Shift } from '../calendar/types';
 
-const RegisterShifts = async (email: string, shifts: Shift[]) => {
+const RegisterShifts = async (email: string, shifts: Shift[]): Promise<Result<string>> => {
 	try {
 		const response = await fetch(process.env.NEXT_PUBLIC_API_URL + '/shifts', {
 			method: 'POST',
@@ -12,15 +13,16 @@ const RegisterShifts = async (email: string, shifts: Shift[]) => {
 				'shifts': shifts
 			})
 		});
-		if (!response.ok) {
-			throw new Error('再ログインしてください');
-		}
+
 		const data = await response.json();
 
-		return data;
+		if (!response.ok || data.error) {
+			return { error: data.error || 'シフトの登録に失敗しました' };
+		}
+
+		return { data: data.message };
 	} catch (error) {
-		console.error("Failed to register shifts", error);
-		return {'error': error};
+		return { error: '不明なエラーが発生しました' };
 	}
 }
 

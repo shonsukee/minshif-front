@@ -13,6 +13,7 @@ import {
   AppSidebarWrapper,
   SidebarTriggerWrapper,
 } from "@/features/home/sidebar/components/SidebarWrapper";
+import ToastProvider from "@/features/context/ToastContext";
 
 export const metadata: Metadata = {
   title: "minshif",
@@ -36,6 +37,7 @@ export default async function RootLayout({
         <body className={`${inter.className} h-full`}>
           <div className="flex flex-col min-h-screen">
             <Header />
+            <ToastProvider>
             <UserProvider>
               <MembershipProvider>
                 <ShiftSubmissionProvider>
@@ -51,6 +53,7 @@ export default async function RootLayout({
                 </ShiftSubmissionProvider>
               </MembershipProvider>
             </UserProvider>
+            </ToastProvider>
             <Footer />
           </div>
         </body>
