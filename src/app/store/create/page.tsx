@@ -33,8 +33,8 @@ export default function StoreCreate() {
 			return;
 		}
 
-		router.push('/home');
 		notifySuccess(response['data']);
+		router.push('/home');
 	}
 
 	return (

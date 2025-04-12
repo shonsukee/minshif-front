@@ -16,8 +16,8 @@ const CreateStore = async ({ name, location, id }: { name: string, location: str
 
 		const data = await response.json();
 
-		if (!response.ok && data.error) {
-			return { error: data.error };
+		if (!response.ok) {
+			return { error: data.error || '不明なエラーが発生しました' };
 		}
 
 		return data;

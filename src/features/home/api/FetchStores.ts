@@ -12,8 +12,8 @@ const FetchStores = async ( id: string | undefined): Promise<Result<Store[]>> =>
 
 		const data = await response.json();
 
-		if (!response.ok && data.error) {
-			return { error: data.error };
+		if (!response.ok) {
+			return { error: data.error || '不明なエラーが発生しました' };
 		}
 
 		return { data: data };

@@ -12,8 +12,8 @@ const FetchPreferredShiftPeriod = async ( email: string ): Promise<Result<ShiftS
 
 		const data = await response.json();
 
-		if (!response.ok && data.error) {
-			return { error: data.error };
+		if (!response.ok) {
+			return { error: data.error || '不明なエラーが発生しました' };
 		}
 
 		return data;
